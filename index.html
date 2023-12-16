@@ -3,11 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind y css Linkeado-->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./CSS/style.css">
     <title>AhorrADAs</title>
 </head>
-<body>
+<body class="bg-[#dde0e2]">
+    <!-- Header -->
+    <header class="w-full">
+        <nav class="w-full h-24 bg-[#55d8ac] ">
+            <div class=""></div>
+        </nav>
+    </header>
+
+    <main class="flex justify-center ">
+
+    <!-- Pantalla Balance/Filtros/Operaciones -->
+        <section class="section-filtros w-60 bg-white p-5 rounded-md m-3 hidden">
+        <div class="w-4/5 my-14 flex justify-center flex-row">
+            <div class="column-balance flex flex-col">
+                <!-- Balance -->
+                <section class="section-balance w-60 bg-white p-5 rounded-md m-3">
+                    <p class="title-balance text-xl font-bold mb-10">Balance</p>
+                    <ul class="balance-ul">
+                        <li class="section-balance-ganancias flex flex-row items-center justify-between mb-2 md:mb-4">
+                            <p>Ganancias</p>
+                            <p class="text-lime-500">+ $0</p>
+                        </li>
+                        <li class="section-balance-gastos flex flex-row items-center justify-between mb-2 md:mb-4">
+                            <p>Gastos</p>
+                            <p class="text-red-600">- $0</p>
+                        </li>
+                        <li class="section-balance-total flex flex-row items-center justify-between mb-2 md:mb-4">
+                            <p>Total</p>
+                            <p class="">$0</p>
+                        </li>
+                    </ul>
+                </section>
+
+        <!-- Filtros -->
+            <section class="section-filtros w-60 bg-white p-5 rounded-md m-3">
+                    <div class="flex flex-row items-center justify-between mb-4 md:mb-8">
+                        <p class="title-filtros text-xl text-left font-bold">Filtros</p>
+                        <button class="text-sm font-medium text-right">Ocultar Filtros</button>
+                    </div>
+
+                    <form>
+
+                        <ul class="form-filtros-ul">
+                            <li class="section-filtros-tipo mb-2 md:mb-4 flex flex-col flex-col ">
+                                <label for="form-select-tipo">Tipo</label>
+                                <select class="form-select-tipo p-2 border-slate-200 border-2 rounded-md">
+                                    <option>Gasto</option>
+                                    <option>Ganancia</option>
+                                </select>
+                            </li>
+
+                            <li class="section-filtros-categoria mb-2 md:mb-4 flex flex-col flex-col ">
+                                <label for="form-select-categoria">Categoria</label>
+                                <select class="form-select-categoria p-2 border-slate-200 border-2  rounded-md ">
+                                    <option>Todas</option>
+                                    <option>Comida</option>
+                                    <option>Servicios</option>
+                                    <option>Salidas</option>
+                                    <option>Educación</option>
+                                    <option>Transporte</option>
+                                    <option>Trabajo</option>
+                                </select>
+                            </li>
+
+                            <li class="section-filtros-date mb-2 md:mb-4 flex flex-col flex-col ">
+                                <label for="">Desde</label>
+                                <input type="date" class="input-date p-2 border-slate-200 border-2  rounded-md ">
+                            </li>
+
+                            <li class="section-filtros-ordenar mb-2 md:mb-4 flex flex-col flex-col ">
+                                <label for="">Ordenar por</label>
+                                <select class="p-2 border-slate-200 border-2  rounded-md ">
+                                    <option>Mas reciente</option>
+                                    <option>Menos reciente</option>
+                                    <option>Mayo monto</option>
+                                    <option>Menor monto</option>
+                                    <option>A-Z</option>
+                                    <option>Z-A</option>
+                                </select>
+                            </li>
+
+                        </ul>
+                    </form>
+                </section>
+            </div>
+
+        <!-- Operaciones -->
+            <section class="section-operaciones bg-white w-3/5 p-5 rounded-md m-3 hidden">
+                <div class="flex flex-row items-center justify-between">
+                    <p class="title-section-operaciones text-xl text-left font-bold ">Operaciones</p>
+                        <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] p-2 rounded-md"
+                        id="btn-newOp">+ Nueva Operación</button>
+                </div>
+                <div class="mt-10 flex items-center flex-col">
+                    <figure class="flex justify-center p-6">
+                        <img class="w-2/5" src="./Images/wallet.svg" alt="Sin Resultados">
+                    </figure>
+                    <p class="mt-10 text-xl font-bold	">Sin Resultados</p>
+                    <p class="mt-4">Cambia los filtros o agrega operaciones</p>
+                </div>
+
+            </section>
+
+        <!-- Tabla de Operaciones renderizada -->
+            
+            <div class="div-table-container mt-10 hidden">
+                <table class="table-operationsRender">
+                    <thead>
+                        <tr> 
+                            <th class="w-1/5 border-r-[4vw]">Descripcion</th>
+                            <th class="w-1/5 border-r-[4vw]">Categoria</th>
+                            <th class="w-1/5 border-r-[4vw]">Fecha</th> 
+                            <th class="w-1/5 border-r-[4vw]">Monto</th>
+                            <th class="w-1/5 border-r-[4vw">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="tbody-info-render"></tbody>
+                </table>
+            </div>
+            
+        </div>
+    </section>
+        <!-- Nueva operación -->
+
+
+
+        <!-- Pantalla categorías-->
+        
+            <section class="section-categories bg-white w-2/5 p-5 mt-20 rounded-md m-3 hidden">
+                <div class="">
+                    <h2 class="text-[3rem] mb-[1rem] ">Categorías</h2>
+                    <form  id="form-category">
+                        <div class="mb-[0.5rem]">
+                            <label for="input-add" class="text-xl font-bold mt-5">Nombre </label>
+                        </div>
+                        <div class="w-[100%] flex justify-between">
+                            <input name="input-add" id="input-add" type="text"
+                                class="w-[85%] p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem]">
+                            <button type="button" id="btn-add-categories"
+                                class=" h-[2.5rem] bg-[#55d8ac] p-[0.5rem] rounded-[0.3rem] text-white">Agregar</button>
+                        </div>
+                    </form>
+                    <ul class="mt-[2rem]" id="container-category">
+        
+        
+                    </ul>
+                </div>
+            </section>
+
+    <!-- Pantalla reportes -->
     
+    <section class="section-reports bg-white w-2/5 p-5 rounded-md m-3">
+        <div class=" ">
+            <h2 class="">Reportes</h2>
+            <div class=" flex justify-center">
+                <img src="./Images/presentation-stand.svg" class="">
+            </div>
+            <h3 class=" text-xl  text-center f">Operaciones insuficientes</h3>
+            <h4 class="text-center mb-[1rem]">Prueba agregando más operaciones</h4>
+        </div>
+    </section>
+
+
+
+    </main>
     <script src="./Javascript/main.js"></script>
 
 </body>
