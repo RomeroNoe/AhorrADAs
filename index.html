@@ -6,43 +6,49 @@
     <!-- Tailwind y css Linkeado-->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./CSS/style.css">
-    <title>AhorrADAs</title>
-</head>
-<body class="bg-[#dde0e2]">
     <!-- Iconos y fuentes -->
+    <link rel="icon" type="image/svg+xml" href="./Images/piggy-bank-icon.svg">
+    <link rel="icon" type="image/png" href="./Images/piggy-bank-icon.png">
     <script src="https://kit.fontawesome.com/ae0032aa41.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#dde0e2] font-['Open_Sans']">
     <!-- Header -->
-    <nav class="nav-bar bg-[#56d8ac] flex p-6 text-white flex justify-between max-lg:p-2">
+    <nav class="nav-bar bg-[#56d8ac] flex p-6 text-white flex justify-between max-lg:p-2 list-none	">
         <div class="logo-nav-bar flex">
-            <a class="logo">
                 <h1 class="logo-titulo text-white font-medium text-[36px] max-lg:text-[30px]">
                     <i class="fa-solid fa-wallet mr-2"></i>
                     AhorrADAs
                 </h1>
-            </a>
         </div>
         <div class="nav-menu" >
-            <div class="nav-elementos pt-3 max-lg:hidden">
-                <a href="#balance" class="nav-elemento mr-5">
-                    <i class="fa-solid fa-chart-line mr-2"></i>
-                    Balance
-                </a>
-                <a href="#categorías" class="nav-elemento mr-5 ">
-                    <i class="fa-solid fa-tag mr-2"></i>
-                    Categorías
-                </a>
-                <a href="#reportes" class="nav-elemento mr-5 ">
-                    <i class="fa-solid fa-chart-pie mr-2"></i>
-                    Reportes
-                </a>
-
-            </div>
-            <div class="nav-elemento lg:hidden mr-5 pt-3 max-lg:pt-2">
-                <i class="fa-solid fa-bars"></i>
-            </div>
-
-
+                <ul class="nav-elemento pt-3 max-lg:hidden size-full flex flex-row ">
+                <li>
+                    <button class="nav-elemento mr-5 p-2 hover:bg-[#31C594] rounded-md" id="balance-sheet">
+                        <i class="fa-solid fa-chart-line mr-2"></i>
+                        Balance
+                </button>
+               </li>
+                <li>
+                    <button class="nav-elemento mr-5 p-2 hover:bg-[#31C594] rounded-md" id="categorias-sheet">
+                        <i class="fa-solid fa-tag mr-2"></i>
+                        Categorías
+                    </button>
+                </li>
+                <li>
+                    <button href="" class="nav-elemento mr-5 p-2 hover:bg-[#31C594] rounded-md" id="reportes-sheet">
+                        <i class="fa-solid fa-chart-pie mr-2"></i>
+                        Reportes
+                    </button>
+                </li>
+            </ul>
         </div>
+            <button class="nav-elemento lg:hidden max-lg:p-2 hover:bg-[#31C594] rounded-md">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        
     </nav>
 
     </header>
@@ -54,7 +60,9 @@
         <div class="size-full flex max-lg:flex-col">
             <div class="column-balance flex flex-col w-2/3 max-lg:size-full">
                 <!-- Balance -->
-                <section class="section-balance bg-white p-5 rounded-md m-3">
+                <section class="section-balance bg-white p-5 rounded-md m-3 shadow-md
+
+                ">
                     <a name="balance"></a>
                     <p class="title-balance text-xl font-bold mb-10">Balance</p>
                     <ul class="balance-ul">
@@ -74,7 +82,7 @@
                 </section>
 
         <!-- Filtros -->
-            <section class="section-filtros bg-white p-5 rounded-md m-3">
+            <section class="section-filtros bg-white p-5 rounded-md m-3 shadow-md">
                     <div class="flex flex-row items-center justify-between mb-4 md:mb-8">
                         <p class="title-filtros text-xl text-left font-bold">Filtros</p>
                         <button class="text-sm font-medium text-right">Ocultar Filtros</button>
@@ -127,10 +135,10 @@
             </div>
 
         <!-- Operaciones -->
-            <section class="section-operaciones bg-white wp-5 rounded-md m-3 size-full">
+            <section class="section-operaciones bg-white wp-5 rounded-md m-3 size-full shadow-md">
                 <div class="flex flex-row items-center justify-between">
-                    <p class="p-5 title-section-operaciones text-xl text-left font-bold">Operaciones</p>
-                        <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] m-5 rounded-md p-3"
+                    <p class="p-5 mb-10 title-section-operaciones text-xl text-left font-bold">Operaciones</p>
+                        <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 rounded-md p-3"
                         id="btn-newOp">+ Nueva Operación</button>
                 </div>
                 <div class="mt-10 flex items-center flex-col">
@@ -140,26 +148,24 @@
                     <p class="mt-10 text-xl font-bold">Sin Resultados</p>
                     <p class="mt-4">Cambia los filtros o agrega operaciones</p>
                 </div>
+                 <!-- Tabla de Operaciones renderizada -->
+                <div class="div-table-container mt-10 hidden">
+                    <table class="table-operationsRender ">
+                        <thead>
+                            <tr> 
+                                <th class="w-1/5 border-r-[4vw]">Descripcion</th>
+                                <th class="w-1/5 border-r-[4vw]">Categoria</th>
+                                <th class="w-1/5 border-r-[4vw]">Fecha</th> 
+                                <th class="w-1/5 border-r-[4vw]">Monto</th>
+                                <th class="w-1/5 border-r-[4vw">Acciones</th>
+                            </tr>
+                        </thead>
+    
+                        <tbody class="tbody-info-render"></tbody>
+                    </table>
+                </div>
 
             </section>
-
-        <!-- Tabla de Operaciones renderizada -->
-            
-            <div class="div-table-container mt-10 hidden">
-                <table class="table-operationsRender">
-                    <thead>
-                        <tr> 
-                            <th class="w-1/5 border-r-[4vw]">Descripcion</th>
-                            <th class="w-1/5 border-r-[4vw]">Categoria</th>
-                            <th class="w-1/5 border-r-[4vw]">Fecha</th> 
-                            <th class="w-1/5 border-r-[4vw]">Monto</th>
-                            <th class="w-1/5 border-r-[4vw">Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="tbody-info-render"></tbody>
-                </table>
-            </div>
             
         </div>
     </section>
@@ -169,7 +175,7 @@
 
         <!-- Pantalla categorías-->
         
-            <section class="section-categories bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
+            <section id="section-categories" class="section-categories bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
                 <a name="categoria"></a>
                 <div class="">
                     <h2 class="text-[3rem] mb-[1rem] ">Categorías</h2>
@@ -196,7 +202,7 @@
     <section class="section-reports bg-white w-3/4 p-5 mt-20 rounded-md m-3 hidden">
         <a name="reportes"></a>
         <div class=" ">
-            <h2 class="text-[3rem] mb-[1rem] ">Reportes</h2>
+            <h2 class="text-[3rem] mb-[1rem]= ">Reportes</h2>
             <div class=" flex justify-center">
                 <img src="./Images/presentation-stand.svg" class="w-1/4 my-10">
             </div>
