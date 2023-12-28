@@ -26,6 +26,7 @@ const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 /* RENDERIZADAS*/
 
+
 /* EVENTOS */
 
 const initializeApp = () => {
@@ -65,19 +66,19 @@ const showOperations = (arrayOperations) => {
       }
 
     for (const operation of arrayOperations) {    
+        $(".tbody-info-render").innerHTML +=
 
-         just(".tbody-info-render").innerHTML +=
-
-    `<tr>
-        <td class="text-center border-r-6 p-3 border-transparent max-w-[150px] whitespace-normal break-words">${operation.descripcion}</td>
-        <td class="text-center border-r-6 p-3 border-transparent">
+//HAY QUE ACOMODARLO *llora en tailwind*
+   `<tr>
+        <td class="text-center border-r-6 p-3max-w-[150px]">${operation.descripcion}</td>
+        <td class="text-center border-r-6 p-3">
             <p class="bg-slate-300 text-center rounded-md">${categoryName(operation.categoria)}</p>
          </td>
-        <td class="text-center border-r-6 p-3 border-transparent">${operation.fecha}</td>
-        <td class="text-center border-r-6 p-3 border-transparent break-all" id="num-amount">${operation.monto}</td>
+        <td class="text-center border-r-6 p-3">${operation.fecha}</td>
+        <td class="text-center border-r-6 p-3" id="num-amount">${operation.monto}</td>
         <td class="p-3 flex flex-col">
-            <button class="bg-slate-300 text-center mb-1 border-r-6 border-transparent rounded-md" onclick="ejecutionOfNewOp('${operation.id}')">Editar</button>
-            <button class="bg-slate-300 text-center border-r-6 border-transparent rounded-md" onclick="ejecutionDeleteBtn('${operation.id}', '${operation.descripcion}')">Eliminar</button>
+            <button class="bg-slate-300 text-center mb-1 border-r-6 rounded-md" onclick="ejecutionOfNewOp('${operation.id}')">Editar</button>
+            <button class="bg-slate-300 text-center border-r-6 rounded-md" onclick="ejecutionDeleteBtn('${operation.id}', '${operation.descripcion}')">Eliminar</button>
         </td>
     </tr>
     <tr class="m-28 border-2 border-slate-300"></tr> 
