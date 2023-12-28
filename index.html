@@ -169,9 +169,55 @@
             
         </div>
     </section>
+
+
         <!-- Nueva operación -->
 
+        <!--HAY QUE ACOMODARLO *llora en tailwind*-->
 
+        <section class="section-newOperation bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
+        <div class="bg-white p-8 rounded-md">
+            <p class="title-section-newOperation text-xl font-bold mb-4 md:mb-8"
+                id="newOp-tittle">Nueva Operacion</p>
+            <form action="" class="flex flex-col">
+                <label for="input-description-text" class="font-bold">Descripcion</label>
+                <input type="text" id="input-description-text" class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md" name="description"
+                    placeholder="Descripcion" required>
+
+                <label for="input-amount" class="font-bold">Monto</label>
+                <input type="number" id="input-amount" class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md" name="amount"
+                    placeholder="Monto" required>
+
+                <label for="select-type" class="font-bold">Tipo</label>
+                <select class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md" id="select-type" required>
+                    <option value="gasto">Gasto</option>
+                    <option value="ganancia">Ganancia</option>
+                </select>
+
+                <label for="select-category" class="font-bold">Categoria</label>
+                <select class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md" id="select-category" required>
+                    <option>Comida</option>
+                    <option>Servicios</option>
+                    <option>Salidas</option>
+                    <option>Educación</option>
+                    <option>Transporte</option>
+                    <option>Trabajo</option>
+                </select>
+
+                <label for="op-input-date" class="font-bold">Fecha</label>
+                <input type="date" id="op-input-date" class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md" name="date" placeholder="Fecha"
+                    required>
+            </form>
+            <div class="w-full flex justify-end">
+                <div class="options-newOperation">
+                    <button class="text-black bg-slate-100 hover:bg-slate-300  p-2 rounded-md" id="btn-cancel-newOp">Cancelar</button>
+                    <button class="text-black bg-[#56d8ac] hover:bg-[#31C594] p-2 ml-7 rounded-md" id="btn-add-newOp">Agregar</button>
+                    <button
+                        class="btn-confirm-edit text-black bg-[#56d8ac] p-2 ml-7 rounded-md ml-2 hidden">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
         <!-- Pantalla categorías-->
         
