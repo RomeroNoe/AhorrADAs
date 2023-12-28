@@ -16,8 +16,9 @@
 </head>
 <body class="bg-[#dde0e2] font-['Open_Sans']">
     <!-- Header -->
-    <nav class="nav-bar bg-[#56d8ac] flex p-6 text-white flex justify-between max-lg:p-2 list-none	">
-        <div class="logo-nav-bar flex">
+<header>
+    <nav class="nav-bar bg-[#56d8ac] p-6 text-white flex justify-between max-lg:p-2">
+        <div class="logo-nav-bar">
                 <h1 class="logo-titulo text-white font-medium text-[36px] max-lg:text-[30px]">
                     <i class="fa-solid fa-wallet mr-2"></i>
                     AhorrADAs
@@ -45,7 +46,7 @@
                 </li>
             </ul>
         </div>
-            <button class="nav-elemento lg:hidden max-lg:p-2 hover:bg-[#31C594] rounded-md">
+            <button class="nav-elemento menu-hamburgesa lg:hidden max-lg:p-2 hover:bg-[#31C594] rounded-md">
                 <i class="fa-solid fa-bars"></i>
             </button>
         
@@ -141,7 +142,7 @@
                         <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 rounded-md p-3"
                         id="btn-newOp">+ Nueva Operación</button>
                 </div>
-                <div class="mt-10 flex items-center flex-col">
+                <div class="mt-10 flex items-center flex-col hidden">
                     <figure class="flex justify-center p-6">
                         <img class="w-2/5" src="./Images/wallet.svg" alt="Sin Resultados">
                     </figure>
@@ -149,15 +150,15 @@
                     <p class="mt-4">Cambia los filtros o agrega operaciones</p>
                 </div>
                  <!-- Tabla de Operaciones renderizada -->
-                <div class="div-table-container mt-10 hidden">
-                    <table class="table-operationsRender ">
+                <div class="div-table-container mt-5 px-6">
+                    <table class="table-operationsRender">
                         <thead>
-                            <tr> 
-                                <th class="w-1/5 border-r-[4vw]">Descripcion</th>
-                                <th class="w-1/5 border-r-[4vw]">Categoria</th>
-                                <th class="w-1/5 border-r-[4vw]">Fecha</th> 
-                                <th class="w-1/5 border-r-[4vw]">Monto</th>
-                                <th class="w-1/5 border-r-[4vw">Acciones</th>
+                            <tr class=""> 
+                                <th class="p-6">Descripcion</th>
+                                <th class="p-6">Categoria</th>
+                                <th class="p-6">Fecha</th> 
+                                <th class="p-6">Monto</th>
+                                <th class="p-6">Acciones</th>
                             </tr>
                         </thead>
     
@@ -170,6 +171,46 @@
         </div>
     </section>
         <!-- Nueva operación -->
+        <form action="" class="form container bg-white w-3/4 p-5 mt-20 rounded-md m-3 flex flex-col">
+            <h2 class="text-[3rem] mb-[1rem]">Nueva operación</h2>
+            <div class="mb-3 flex flex-col">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <input type="text" class="form-ctrl border-2 rounded p-2 mt-2 hover:border-gray-400" name="descripcion" id="descripcion" placeholder="Descripción">
+                <p class="text-error hidden"><i class="fa-sharp fa-solid fa-circle-exclamation me-2"></i>Este campo es requerido</p>
+            </div>
+            <div class="mb-3 flex flex-col">
+                <label for="monto" class="form-label">Monto</label>
+                <input type="number" class="form-ctrl border-2 rounded p-2 mt-2 hover:border-gray-400" name="monto" id="monto" placeholder="Monto">
+            </div>
+            <div class="mb-3 flex flex-col">
+                <label for="tipo" class="form-select">Tipo</label>
+                <select class="select-tipo-form border-2 rounded p-2 mt-2 hover:border-gray-400">
+                    <option>Gasto</option>
+                    <option>Ganancia</option>
+                </select>
+            </div>
+            <div class="mb-3 flex flex-col">
+                <label for="categoria" class="form-select">Categoría</label>
+                <select class="select-categoria-form border-2 rounded p-2 mt-2 hover:border-gray-400">
+                     <option>Comida</option>
+                     <option>Servicios</option> 
+                     <option>Salidas</option>
+                     <option>Educación</option>
+                     <option>Transporte</option>
+                     <option>Trabajo</option>
+                </select>
+            </div>
+            <div class="mb-3 flex flex-col">
+                <label for="date" class="form-select">Fecha</label>
+                <input type="date" class="border-2 rounded p-2 mt-2 hover:border-gray-400">
+
+            </div>
+          
+            <div class="mb-3 flex justify-end mt-5">
+                <button class="btn p-2 mr-2 rounded bg-gray-200 hover:bg-gray-300" id="btn-cancel">Cancelar</button>
+                <button class="btn p-2 rounded bg-green-500 text-white hover:bg-green-600" id="btn-add">Agregar</button>
+            </div>
+        </form>
 
 
 
