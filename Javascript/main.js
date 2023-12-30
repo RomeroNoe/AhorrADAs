@@ -24,87 +24,86 @@ const cleanContainer = (selector) => $(selector).innerHTML = ""
 const getData = (key) => JSON.parse(localStorage.getItem(key))
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
-
-// const operations = [
-//     {
-//         descripcion: "Pizza",
-//         categoria: "Comida",
-//         cecha: 05/12/2023,
-//         monto: -10
-
-//     },
-//     {
-//         descripcion: "Gasolina",
-//         categoria: "Auto",
-//         fecha: 07/12/2023,
-//         monto: -50
-
-//     },
-//     {
-//         descripcion: "Salario",
-//         categoria: "Ingresos",
-//         fecha: 29/12/2023,
-//         monto: 1500
-
-//     }
-
-
-
 /* RENDERIZADAS*/
+
+
 
 const renderOperations = (operations) => {
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>${operation.descripcion}</td>
+            <td>${operation.categoria}</td>
+            <td>${operation.fecha}</td>
+            <td>${operation.monto}</td>
             <td>
-                 <button class="btn btn-success">Editar</i></button>
-                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
-             </td>
+                <button class="btn btn-success">Editar</i></button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+            </td>
         </tr>
         `
     }
 }
-// renderOperations(operations)
+
+
 
 /* EVENTOS */
 
 const initializeApp = () => {
  
-    // Cambios de pantallas
+    // Navigacion
 
-    $("btn-newOp").addEventListener("click", () => {
-        showElement(".section-newOperation")
-        hideElement(".section-filtros")
+    $("#btn-newOp").addEventListener("click", () => {
+        showElement([".section-newOperation"])
+        hideElement([".section-filtros-balance-operaciones"])
 
     })
 
     $("#categorias-sheet").addEventListener("click", () => {
-        showElement(".section-categories")
-        hideElement([".section-filtros", ".section-operaciones"]);
+        showElement([".section-categories"])
+        hideElement([".section-filtros-balance-operaciones", ".section-newOperation", ".section-reports"])
     })
 
     $("#reportes-sheet").addEventListener("click", () => {
-        showElement(".section-operaciones")
-        hideElement([".section-filtros", ".section-categories"]);
+        showElement([".section-reports"])
+        hideElement([".section-filtros-balance-operaciones", ".section-categories", ".section-newOperation"])
     })
 
-    $("#filtros-sheet").addEventListener("click", () => {
-        showElement(".section-filtros")
-        hideElement([".section-categories", ".section-operaciones"]);
+
+    $("#balance-sheet").addEventListener("click", () => {
+        hideElement([".section-categories", ".section-newOperation", ".section-reports"])
+        showElement([".section-filtros-balance-operaciones"])
+    })
+
+    $("#btn-cancel-newOp").addEventListener("click", () => {
+        hideElement([".section-newOperation"])
+        showElement([".section-filtros-balance-operaciones"])
+    })
+
+    $("#btn-add-newOp").addEventListener("click", (e) => {
+        e.preventDefault()
+        const newOperation = saveOperation()
     })
 
 }
 // a mi me sale error: window is not defined, no se por que
 window.addEventListener("load", initializeApp)
 
+/* Data handlers */
+const operationsPlaceholder = []
 
-
+const saveOperation = (operationID) => {
+    return{
+        id: operationID ? operationID : randomId(),
+        descripcion: $("#input-description-text").value,
+        categoria: $("#select-category").value,
+        fecha: $("#op-input-date").value,
+        monto: $("#input-amount").value
+    }
+}
 
 /*NUEVA OPERACION */
+
 const showOperations = (arrayOperations) => {
     $(".tbody-info-render").innerHTML = "" 
         if (!(arrayOperations.length > 0)) {
@@ -122,7 +121,7 @@ const showOperations = (arrayOperations) => {
 
     for (const operation of arrayOperations) {    
         $(".tbody-info-render").innerHTML +=
-c
+
 //HAY QUE ACOMODARLO *llora en tailwind*
    `<tr>
         <td class="text-center border-r-6 p-3max-w-[150px]">${operation.descripcion}</td>
