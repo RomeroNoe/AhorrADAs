@@ -44,7 +44,75 @@ const setData = (key, data) => {
     }
 };
 
+
+//Date
+
+const setDate = () => {
+    const dateInputs = $$("input[type='date']")
+    for (const date of dateInputs) {
+        date.valueAsDate = new Date()
+    }
+}
+
+const today = new Date()
+const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+$().valueAsDate = date  //acá va el for del label fecha en Nueva Operación
+
+
+const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+$().valueAsDate = firstDayOfTheMonth  //acá va el for del label Desde de los filtros, es para que aparezca el dia actual cuando se abre el almanaque
+
+
+//Categories
+
+const defaultCategories = [
+            { id: randomId(), name: "Comida" },
+            { id: randomId(), name: "Servicios" },
+            { id: randomId(), name: "Salidas" },
+            { id: randomId(), name: "Educación" },
+            { id: randomId(), name: "Transporte" },
+            { id: randomId(), name: "Trabajo" }       
+]
+
+const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
+
+
+//Add  New Category
+
+const addNewCategory = () => {
+    const categoryName = $("#input-add").value
+    if (categoryName) {
+        const newCategory = {
+            id: randomId(),
+            name: categoryName,
+        }
+        const updatedCategories = [...getCategories(), newCategory]
+        updateData(updatedCategories, getOperations())
+        $("#input-add").value = "" //Acá también va el for del label Nombre del bloque de Categorías
+    } else {
+    }//En este estaba pensando agregarle un else para poner una ventana de error por si lo deja vacío
+}
+
+//Delete Category
+
+const deleteCategory = (categoryId) => {
+    const categoryName = getCategoryNameById(categoryId)
+    const confirmation = confirm(`¿Estás seguro de eliminar la categoría "${categoryName}"?`)
+
+    if (confirmation) {
+        const updatedCategories = getCategories().filter(({id}) => id !== categoryId)
+        const updatedOperations = getOperations().filter(({category}) => category !== categoryId)
+        updateData(updatedCategories, updatedOperations)
+    } else {
+    }//Acá tambien podemos ponerle una ventana por si cancela el confirm. (algo tipo "Eliminación de categoria cancelada")
+}
+
+
+//Operations
+
+const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
+
 
 /* RENDERIZADAS*/
 
@@ -52,9 +120,9 @@ const renderOperations = (operations) => {
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
-            <td>${operation.descripcion}</td>
-            <td>${operation.categoria}</td>
-            <td>${operation.fecha}</td>
+            <td>${operation.description}</td>
+            <td>${operation.category}</td>
+            <td>${operation.day}</td>
             <td>${operation.monto}</td>
             <td>
                 <button class="btn btn-edit" onclick="">Editar</i></button>
@@ -65,19 +133,22 @@ const renderOperations = (operations) => {
     }
 }
 
+
+
 /* Data handlers */
 const operationsPlaceholder = []
 
 const saveOperation = () => {
     return{
         id: randomId(),
-        descripcion: $("#input-description-text").value,
-        categoria: $("#select-category").value,
-        fecha: $("#op-input-date").value,
-        monto: $("#input-amount").value
+        description: $("#input-description-text").value,
+        category: $("#select-category").value,
+        day: $("#op-input-date").value,
+        amount: $("#input-amount").valueAsNumber,
+        type: $("#select-type").value,
     }
-    $
 }
+//cambié nombres a inglés, y agregué el type
 
 const editForm = () => {
     showElement([".section-newOperation"])
