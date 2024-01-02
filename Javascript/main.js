@@ -20,13 +20,33 @@ const hideElement = (selectors) => {
 const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
+// const getData = (key) => JSON.parse(localStorage.getItem(key)) //// a mi me sale error aqui: localStorage is not defined
+// const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
-const getData = (key) => JSON.parse(localStorage.getItem(key))
-const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
+// const allOperations = getData("operations") || [] //// a mi me sale error aqui: localStorage is not defined
+
+
+// Irena: he encontrado una solucion para el localStorage, pero es diferente de lo que hemos hecho en la clase:
+const getData = (key) => {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+    } catch (error) {
+        console.error('Error reading from localStorage:', error);
+        return [];
+    }
+};
+
+const setData = (key, data) => {
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+        console.error('Error writing to localStorage:', error);
+    }
+};
+
+const allOperations = getData("operations") || []
 
 /* RENDERIZADAS*/
-
-
 
 const renderOperations = (operations) => {
     for (const operation of operations) {
@@ -37,26 +57,49 @@ const renderOperations = (operations) => {
             <td>${operation.fecha}</td>
             <td>${operation.monto}</td>
             <td>
-                <button class="btn btn-success">Editar</i></button>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button class="btn btn-edit" onclick="">Editar</i></button>
+                <button type="button" class="btn btn-remove" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
     }
 }
 
+/* Data handlers */
+const operationsPlaceholder = []
+
+const saveOperation = () => {
+    return{
+        id: randomId(),
+        descripcion: $("#input-description-text").value,
+        categoria: $("#select-category").value,
+        fecha: $("#op-input-date").value,
+        monto: $("#input-amount").value
+    }
+    $
+}
+
+const editForm = () => {
+    showElement([".section-newOperation"])
+    hideElement([".section-filtros-balance-operaciones"])
+    hideElement(["#btn-add-newOp"])
+    showElement([".btn-confirm-edit"])
+
+
+}
 
 
 /* EVENTOS */
 
 const initializeApp = () => {
+    setData("operations", allOperations) 
+    renderOperations(allOperations) 
  
     // Navigacion
 
     $("#btn-newOp").addEventListener("click", () => {
         showElement([".section-newOperation"])
         hideElement([".section-filtros-balance-operaciones"])
-
     })
 
     $("#categorias-sheet").addEventListener("click", () => {
@@ -68,7 +111,6 @@ const initializeApp = () => {
         showElement([".section-reports"])
         hideElement([".section-filtros-balance-operaciones", ".section-categories", ".section-newOperation"])
     })
-
 
     $("#balance-sheet").addEventListener("click", () => {
         hideElement([".section-categories", ".section-newOperation", ".section-reports"])
@@ -82,25 +124,14 @@ const initializeApp = () => {
 
     $("#btn-add-newOp").addEventListener("click", (e) => {
         e.preventDefault()
-        const newOperation = saveOperation()
+        const currentData = getData("operations")
+        currentData.push(saveOperation())
+        setData("operations", currentData)
     })
 
 }
 // a mi me sale error: window is not defined, no se por que
 window.addEventListener("load", initializeApp)
-
-/* Data handlers */
-const operationsPlaceholder = []
-
-const saveOperation = (operationID) => {
-    return{
-        id: operationID ? operationID : randomId(),
-        descripcion: $("#input-description-text").value,
-        categoria: $("#select-category").value,
-        fecha: $("#op-input-date").value,
-        monto: $("#input-amount").value
-    }
-}
 
 /*NUEVA OPERACION */
 
