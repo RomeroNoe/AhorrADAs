@@ -56,11 +56,11 @@ const setDate = () => {
 
 const today = new Date()
 const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-$().valueAsDate = date  //acá va el for del label fecha en Nueva Operación
+$("#op-input-date").valueAsDate = date  //Label fecha / Nueva Operación
 
 
 const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-$().valueAsDate = firstDayOfTheMonth  //acá va el for del label Desde de los filtros, es para que aparezca el dia actual cuando se abre el almanaque
+$("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
 
 //Categories
@@ -89,7 +89,7 @@ const addNewCategory = () => {
         }
         const updatedCategories = [...getCategories(), newCategory]
         updateData(updatedCategories, getOperations())
-        $("#input-add").value = "" //Acá también va el for del label Nombre del bloque de Categorías
+        $("#input-add").value = "" 
     } else {
     }//En este estaba pensando agregarle un else para poner una ventana de error por si lo deja vacío
 }
