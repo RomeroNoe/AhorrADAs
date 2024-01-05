@@ -23,9 +23,6 @@ const cleanContainer = (selector) => $(selector).innerHTML = ""
 // const getData = (key) => JSON.parse(localStorage.getItem(key)) //// Irena: a mi me sale error aqui: localStorage is not defined
 // const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
-// const allOperations = getData("operations") || [] //// Irena: a mi me sale error aqui: localStorage is not defined
-
-
 // Irena: he encontrado una solucion para el localStorage, pero es diferente de lo que hemos hecho en la clase:
 const getData = (key) => {
     try {
@@ -125,8 +122,8 @@ const renderOperations = (operations) => {
             <td>${operation.day}</td>
             <td>${operation.amount}</td>
             <td>
-                <button class="btn btn-edit" onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="btn btn-remove" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button class="btn btn-edit text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
+                <button type="button" class="btn btn-remove text-rose-700 hover:text-black" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
@@ -210,16 +207,18 @@ const initializeApp = () => {
     // aqui me sale error: Uncaught ReferenceError: operation is not defined
     $(".btn-confirm-edit").addEventListener("click", (e) => {
         e.preventDefault()
-        const operationId = $(".btn-confirm-edit").getAttribute("data-id")
-        const currentData = getData("operations").map( user => {
-            if(operation.id === operationId) {
+        hideElement([".section-newOperation"])
+        showElement([".section-filtros-balance-operaciones"])
+        const operationId = $(".btn-confirm-edit").getAttribute("data-id");
+        const currentData = getData("operations").map(user => {
+            if (user.id === operationId) {
                 return saveOperation(operationId)
             }
-            return operation
+            return user;
         })
-        setData("operations", currentData )
-
-    })
+        setData("operations", currentData)
+        window.location.reload()
+})
 
 
 }
@@ -244,8 +243,8 @@ const showOperations = (arrayOperations) => {
       }
 
     for (const operation of arrayOperations) {    
+        const amountToShow = operation.type === 'Gasto' ? `-${operation.amount}` : operation.amount;
         $(".tbody-info-render").innerHTML +=
-
 //HAY QUE ACOMODARLO *llora en tailwind*
    `<tr>
         <td class="text-center border-r-6 p-3max-w-[150px]">${operation.descripcion}</td>
