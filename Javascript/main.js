@@ -20,10 +20,10 @@ const hideElement = (selectors) => {
 const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
-// const getData = (key) => JSON.parse(localStorage.getItem(key)) //// a mi me sale error aqui: localStorage is not defined
+// const getData = (key) => JSON.parse(localStorage.getItem(key)) //// Irena: a mi me sale error aqui: localStorage is not defined
 // const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
-// const allOperations = getData("operations") || [] //// a mi me sale error aqui: localStorage is not defined
+// const allOperations = getData("operations") || [] //// Irena: a mi me sale error aqui: localStorage is not defined
 
 
 // Irena: he encontrado una solucion para el localStorage, pero es diferente de lo que hemos hecho en la clase:
@@ -47,20 +47,20 @@ const setData = (key, data) => {
 
 //Date
 
-const setDate = () => {
-    const dateInputs = $$("input[type='date']")
-    for (const date of dateInputs) {
-        date.valueAsDate = new Date()
-    }
-}
+// const setDate = () => {
+//     const dateInputs = $$("input[type='date']")
+//     for (const date of dateInputs) {
+//         date.valueAsDate = new Date()
+//     }
+// }
 
-const today = new Date()
-const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-$().valueAsDate = date  //acá va el for del label fecha en Nueva Operación
+// const today = new Date()
+// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+// $().valueAsDate = date  //acá va el for del label fecha en Nueva Operación
 
 
-const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-$().valueAsDate = firstDayOfTheMonth  //acá va el for del label Desde de los filtros, es para que aparezca el dia actual cuando se abre el almanaque
+// const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+// $().valueAsDate = firstDayOfTheMonth  //acá va el for del label Desde de los filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
 
 //Categories
@@ -114,7 +114,7 @@ const deleteCategory = (categoryId) => {
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
 
 
-/* RENDERIZADAS*/
+/* RENDERS*/
 
 const renderOperations = (operations) => {
     for (const operation of operations) {
@@ -123,16 +123,15 @@ const renderOperations = (operations) => {
             <td>${operation.description}</td>
             <td>${operation.category}</td>
             <td>${operation.day}</td>
-            <td>${operation.monto}</td>
+            <td>${operation.amount}</td>
             <td>
-                <button class="btn btn-edit" onclick="">Editar</i></button>
+                <button class="btn btn-edit" onclick="editForm('${operation.id}')">Editar</i></button>
                 <button type="button" class="btn btn-remove" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
     }
 }
-
 
 
 /* Data handlers */
@@ -150,27 +149,31 @@ const saveOperation = () => {
 }
 //cambié nombres a inglés, y agregué el type
 
-const editForm = () => {
-    showElement([".section-newOperation"])
-    hideElement([".section-filtros-balance-operaciones"])
-    hideElement(["#btn-add-newOp"])
-    showElement([".btn-confirm-edit"])
-
+const editForm = (operationId) => {
+    hideElement([".section-filtros-balance-operaciones", "#btn-add-newOp"])
+    showElement([".section-newOperation", ".btn-confirm-edit"])
+    $(".btn-confirm-edit").setAttribute("data-id", operationId)
+    const operationEdit = getData("operations").find(operation => operation.id === operationId)
+    $("#input-description-text").value = operationEdit.description
+    $("#select-category").value = operationEdit.category
+    $("#op-input-date").value = operationEdit.day
+    $("#input-amount").value = operationEdit.amount
+    $("#select-type").value = operationEdit.type
 
 }
 
 
-/* EVENTOS */
+/* EVENTS */
 
 const initializeApp = () => {
     setData("operations", allOperations) 
     renderOperations(allOperations) 
  
-    // Navigacion
+    // Navigation 
 
     $("#btn-newOp").addEventListener("click", () => {
-        showElement([".section-newOperation"])
-        hideElement([".section-filtros-balance-operaciones"])
+        showElement([".section-newOperation", "#btn-add-newOp"])
+        hideElement([".section-filtros-balance-operaciones", ".btn-confirm-edit"])
     })
 
     $("#categorias-sheet").addEventListener("click", () => {
@@ -188,6 +191,8 @@ const initializeApp = () => {
         showElement([".section-filtros-balance-operaciones"])
     })
 
+    // Action buttons
+
     $("#btn-cancel-newOp").addEventListener("click", () => {
         hideElement([".section-newOperation"])
         showElement([".section-filtros-balance-operaciones"])
@@ -198,10 +203,27 @@ const initializeApp = () => {
         const currentData = getData("operations")
         currentData.push(saveOperation())
         setData("operations", currentData)
+        hideElement([".section-newOperation"])
+        showElement([".section-filtros-balance-operaciones"])
     })
 
+    // aqui me sale error: Uncaught ReferenceError: operation is not defined
+    $(".btn-confirm-edit").addEventListener("click", (e) => {
+        e.preventDefault()
+        const operationId = $(".btn-confirm-edit").getAttribute("data-id")
+        const currentData = getData("operations").map( user => {
+            if(operation.id === operationId) {
+                return saveOperation(operationId)
+            }
+            return operation
+        })
+        setData("operations", currentData )
+
+    })
+
+
 }
-// a mi me sale error: window is not defined, no se por que
+
 window.addEventListener("load", initializeApp)
 
 /*NUEVA OPERACION */
@@ -230,8 +252,8 @@ const showOperations = (arrayOperations) => {
         <td class="text-center border-r-6 p-3">
             <p class="bg-slate-300 text-center rounded-md">${categoryName(operation.categoria)}</p>
          </td>
-        <td class="text-center border-r-6 p-3">${operation.fecha}</td>
-        <td class="text-center border-r-6 p-3" id="num-amount">${operation.monto}</td>
+        <td class="text-center border-r-6 p-3">${operation.day}</td>
+        <td class="text-center border-r-6 p-3" id="num-amount">${operation.amount}</td>
         <td class="p-3 flex flex-col">
             <button class="bg-slate-300 text-center mb-1 border-r-6 rounded-md" onclick="ejecutionOfNewOp('${operation.id}')">Editar</button>
             <button class="bg-slate-300 text-center border-r-6 rounded-md" onclick="ejecutionDeleteBtn('${operation.id}', '${operation.descripcion}')">Eliminar</button>
