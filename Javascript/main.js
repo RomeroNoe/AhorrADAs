@@ -23,6 +23,9 @@ const cleanContainer = (selector) => $(selector).innerHTML = ""
 // const getData = (key) => JSON.parse(localStorage.getItem(key)) //// Irena: a mi me sale error aqui: localStorage is not defined
 // const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
+// const allOperations = getData("operations") || [] //// Irena: a mi me sale error aqui: localStorage is not defined
+
+
 // Irena: he encontrado una solucion para el localStorage, pero es diferente de lo que hemos hecho en la clase:
 const getData = (key) => {
     try {
@@ -75,6 +78,14 @@ const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
 
 
+//Obtener categoría por ID
+
+const getCategoryNameById = (categoryId) => {
+    const categorySelected = getCategories().find(({id}) => id === categoryId)
+    return categorySelected ? categorySelected.name : ''
+}
+
+
 //Add  New Category
 
 const addNewCategory = () => {
@@ -105,6 +116,32 @@ const deleteCategory = (categoryId) => {
     }//Acá tambien podemos ponerle una ventana por si cancela el confirm. (algo tipo "Eliminación de categoria cancelada")
 }
 
+//Edit Category
+
+
+const viewEditCategory = (categoryId) => {
+    hiddenElement(["#section-newOperation", "#section-reports", "#section-categories", "#section-balance"])
+    $("#edit-category-section").classList.remove('hidden')
+
+    const categoryToEdit = getData("categories").find(category => category.id === categoryId);
+    $("#edit-input-category").value = categoryToEdit.categoryName;
+    $("#edit-category-btn").setAttribute("id-category-selected", categoryId);
+}
+
+const confirmEditCategory = () => {
+    const categoryId = $("#edit-btn-category").getAttribute("id-category-selected");
+    const updatedCategories = getData("categories").map(category => {
+        if (category.id === categoryId) {
+            category.categoryName = $("#edit-input-category").value;
+        }
+        return category;
+    });
+    
+    setData('categories', updatedCategories);
+    categoriesList(categories)
+}
+
+
 
 //Operations
 
@@ -122,8 +159,8 @@ const renderOperations = (operations) => {
             <td>${operation.day}</td>
             <td>${operation.amount}</td>
             <td>
-                <button class="btn btn-edit text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="btn btn-remove text-rose-700 hover:text-black" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button class="btn btn-edit" onclick="editForm('${operation.id}')">Editar</i></button>
+                <button type="button" class="btn btn-remove" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
@@ -158,6 +195,52 @@ const editForm = (operationId) => {
     $("#select-type").value = operationEdit.type
 
 }
+
+
+/*BALANCE*/
+
+const balanceCostProfit = (array, tipo) => {
+
+    const filterOperation = array.filter((arr) => {
+        return arr.tipo === tipo && arr
+    })
+    const spent = filterOperation.reduce((acc, arr) => {
+        return acc + Number(arr.monto)
+    }, 0)
+    return spent
+}
+
+const totalBalance = balanceCostProfit(operations, "revenue") - balanceCostProfit(operations, "spent")
+
+const updatedBalance = () => {
+    $("#total-profit").innerHTML = `+$${balanceCostProfit(operations, "revenue")}`
+    $("#total-cost").innerHTML = `+$${balanceCostProfit(operations, "spent")}`
+    $("#total").innerHTML = `$${totalBalance}`
+}
+
+const resetBalance = () => {
+    $("#total-profit").innerHTML = `+$0`
+    $("#total-cost").innerHTML = `+$0`
+    $("#total").innerHTML = `$0`
+}
+
+const renderBalance = () => {
+    if(getData("operationsLS") === "[]"){
+        resetBalance()
+    }
+    else {
+        updatedBalance()
+    }
+}
+
+const calculateBalance = (transactions) => {
+    const totalIncome = total("Ganancia", transactions)
+    const totalExpense = total("Gasto", transactions)
+    const totalBalance = totalIncome - totalExpense
+
+    return { totalIncome, totalExpense, totalBalance }
+}
+
 
 
 /* EVENTS */
@@ -207,18 +290,16 @@ const initializeApp = () => {
     // aqui me sale error: Uncaught ReferenceError: operation is not defined
     $(".btn-confirm-edit").addEventListener("click", (e) => {
         e.preventDefault()
-        hideElement([".section-newOperation"])
-        showElement([".section-filtros-balance-operaciones"])
-        const operationId = $(".btn-confirm-edit").getAttribute("data-id");
-        const currentData = getData("operations").map(user => {
-            if (user.id === operationId) {
+        const operationId = $(".btn-confirm-edit").getAttribute("data-id")
+        const currentData = getData("operations").map( user => {
+            if(operation.id === operationId) {
                 return saveOperation(operationId)
             }
-            return user;
+            return operation
         })
-        setData("operations", currentData)
-        window.location.reload()
-})
+        setData("operations", currentData )
+
+    })
 
 
 }
@@ -243,8 +324,8 @@ const showOperations = (arrayOperations) => {
       }
 
     for (const operation of arrayOperations) {    
-        const amountToShow = operation.type === 'Gasto' ? `-${operation.amount}` : operation.amount;
         $(".tbody-info-render").innerHTML +=
+
 //HAY QUE ACOMODARLO *llora en tailwind*
    `<tr>
         <td class="text-center border-r-6 p-3max-w-[150px]">${operation.descripcion}</td>
@@ -262,3 +343,146 @@ const showOperations = (arrayOperations) => {
     `
   }
 }
+//Reports
+
+// Total de ganancias, gastos y balance por mes
+const totalAmountByMonth = () => {
+    return getTransactions().reduce((acc, transaction) => {
+        const { day, amount, type } = transaction
+        const transactionAmount = type === 'Ganancia' ? amount : -amount
+        const year = new Date(day).getFullYear()
+        const month = new Date(day).getMonth()
+
+        if (!acc[year]) {
+            acc[year] = {}
+        }
+        if (!acc[year][month]) {
+            acc[year][month] = {
+                totalIncome: 0,
+                totalExpense: 0,
+                totalBalance: 0,
+            }
+        }
+        if (type === 'Ganancia') {
+            acc[year][month].totalIncome += amount
+        } else {
+            acc[year][month].totalExpense += amount
+        }
+        acc[year][month].totalBalance += transactionAmount
+        return acc
+    }, {})
+}
+
+// Categoría con mayor valor
+const totalAmountByCategory = () => {
+    return getTransactions().reduce((acc, transaction) => {
+        const { category, amount, type } = transaction
+        const transactionAmount = type === 'Ganancia' ? amount : -amount
+
+        if (!acc[category]) {
+            acc[category] = {
+                totalIncome: 0,
+                totalExpense: 0,
+                totalBalance: 0,
+            }
+        }
+        if (type === 'Ganancia') {
+            acc[category].totalIncome += amount
+        } else {
+            acc[category].totalExpense += amount
+        }
+        acc[category].totalBalance += transactionAmount
+        return acc
+    }, {})
+}
+
+
+// Mes con mayor valor
+const monthWithMaxValue = (property) => {
+    const totalAmounts = totalAmountByMonth()
+    let maxMonth = { year: null, month: null }
+    let maxAmount = null
+
+    for (const year in totalAmounts) {
+        for (const month in totalAmounts[year]) {
+            const currentAmount = totalAmounts[year][month][property]
+            if (maxAmount === null || currentAmount > maxAmount) {
+                maxAmount = currentAmount
+                maxMonth = { year, month }
+            }
+        }
+    }
+    return { maxMonth, maxAmount }
+}
+
+// Categoría -> mayor ganancia
+const renderCategoryWithMaxIncome = () => renderCategorySummary("Categoría con mayor ganancia", "totalIncome", 1)
+
+// Categoría -> mayor gasto
+const renderCategoryWithMaxExpense = () => renderCategorySummary("Categoría con mayor gasto", "totalExpense", -1)
+
+// Categoría -> mayor balance
+const renderCategoryWithMaxBalance = () => renderCategorySummary("Categoría con mayor balance", "totalBalance", 0)
+
+// Mes -> mayor ganancia
+const renderMonthWithMaxIncome = () => renderMonthSummary("Mes con mayor ganancia", "totalIncome", 1)
+
+// Mes -> mayor gasto
+const renderMonthWithMaxExpense = () => renderMonthSummary("Mes con mayor gasto", "totalExpense", -1)
+
+
+
+// Carga por categorías NECESITA TAILWIND
+const renderTotalCategories = () => {
+    const totalsByCategory = totalAmountByCategory()
+    cleanContainer(".reports-categories")
+    for (const category in totalsByCategory) {
+        const { totalIncome, totalExpense, totalBalance } = totalsByCategory[category]
+        $(".reports-categories").innerHTML += `
+            <tr>
+                <td class="">${getCategoryNameById(category)}</td>
+                <td class="">+$${totalIncome.toFixed(2)}</td>
+                <td class="">-$${totalExpense.toFixed(2)}</td>
+                <td class="">$${totalBalance.toFixed(2)}</td>
+            </tr>`
+    }
+}
+
+// Carga por mes NECESITA TAILWIND
+const renderTotalMonths = () => {
+    const totalsByMonth = totalAmountByMonth()
+    cleanContainer(".reports-months")
+    for (const year in totalsByMonth) {
+        for (const month in totalsByMonth[year]) {
+            const { totalIncome, totalExpense, totalBalance } = totalsByMonth[year][month]
+            $(".reports-months").innerHTML += `
+                <tr>
+                    <td class="">${getMonthWithYear(month, year)}</td>
+                    <td class="">+$${totalIncome.toFixed(2)}</td>
+                    <td class="">-$${totalExpense.toFixed(2)}</td>
+                    <td class="">$${totalBalance.toFixed(2)}</td>
+                </tr>`
+        }
+    }
+}
+
+// Actualiza reportes
+
+const updateReports = () => {
+    const transactions = getTransactions()
+    const hasIncome = transactions.some(({type}) => type === 'Ganancia')
+    const hasExpense = transactions.some(({type}) => type === 'Gasto')
+
+    if (hasIncome && hasExpense) {
+        showElement([".has-reports"])
+        hideElement([".none-reports"])
+        renderSummary()
+        renderTotalCategories()
+        renderTotalMonths()
+    } else {
+        showElement([".none-reports"])
+        hideElement([".has-reports"])
+    }
+}
+
+//commit 6-1"Funcionalidades de Reportes, Tabla de reportes a rendeerizar en el html, Editar categoría en el html y funcionalidad en js, reder/total/reset/update de balance"
