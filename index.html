@@ -60,6 +60,7 @@
         <section class="section-filtros-balance-operaciones p-5 rounded-md ">
         <div class="size-full flex max-lg:flex-col">
             <div class="column-balance flex flex-col w-2/3 max-lg:size-full">
+
                 <!-- Balance -->
                 <section class="section-balance bg-white p-5 rounded-md m-3 shadow-md">
                     <a name="balance"></a>
@@ -67,15 +68,15 @@
                     <ul class="balance-ul">
                         <li class="section-balance-ganancias flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Ganancias</p>
-                            <p class="text-lime-500">+ $0</p>
+                            <p class="text-lime-500" id="total-profit"></p>
                         </li>
                         <li class="section-balance-gastos flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Gastos</p>
-                            <p class="text-red-600">- $0</p>
+                            <p class="text-red-600" id="total-cost"></p>
                         </li>
                         <li class="section-balance-total flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Total</p>
-                            <p class="">$0</p>
+                            <p class="" id="total"></p>
                         </li>
                     </ul>
                 </section>
@@ -241,17 +242,82 @@
                 </div>
             </section>
 
+        <!--Edit Category
+        NECESITA TAILWIND-->
+
+        <section id="edit-category-section" class="edit-category-section">
+            <div id="" class="">
+                <h2 class="">Editar Categoría</h2>
+                <form id="edit-category-form" class="">
+                    <div>
+                        <div class="">
+                            <label for="edit-input-category" class="font-medium text-xl">Nombre</label>
+                        </div>
+                        <div class="flex-row">
+                            <input name="edit-input-category" id="edit-input-category" class="" type="text">
+                        <div class="">
+                                <button type="button" class="" id="edit-category-cancel-btn">Cancelar</button>
+                                <button id="edit-category-btn" class="edit-category-btn">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+
     <!-- Pantalla reportes -->
     
     <section class="section-reports bg-white w-3/4 p-5 mt-20 rounded-md m-3 hidden">
         <a name="reportes"></a>
         <div class=" ">
             <h2 class="text-[3rem] mb-[1rem]= ">Reportes</h2>
-            <div class=" flex justify-center">
+            <div class="none-reports flex justify-center">
                 <img src="./Images/presentation-stand.svg" class="w-1/4 my-10">
             </div>
             <h3 class=" text-xl  text-center f">Operaciones insuficientes</h3>
             <h4 class="text-center mb-[1rem]">Prueba agregando más operaciones</h4>
+        </div>
+
+        
+<!--Tabla de reportes NECESITA TAILWIND-->
+        <div class="has-reports hidden">
+            <div class="">
+                <h4 class="">Resumen</h4>
+                <ul class=""></ul>
+            </div>
+            <div class="">
+                <h4 class="">Totales por categoría</h4>
+                <div class="">
+                    <table class="">
+                        <thead>
+                            <tr>
+                                <th class="">Categorías</th>
+                                <th class="">Ganancias</th>
+                                <th class="">Gastos</th>
+                                <th class="">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody class=""></tbody>
+                    </table>
+                </div>  
+            </div>
+            <div class="">
+                <h4 class="">Totales por mes</h4>
+                <div class="">
+                    <table class="">
+                        <thead>
+                            <tr>
+                                <th class="">Mes</th>
+                                <th class="">Ganancias</th>
+                                <th class="">Gastos</th>
+                                <th class="">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody class="reports-months"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </section>
 
