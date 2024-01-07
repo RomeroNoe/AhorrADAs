@@ -100,8 +100,8 @@
                             </li>
 
                             <li class="section-filtros-categoria mb-2 md:mb-4 flex flex-col flex-col ">
-                                <label for="form-select-categoria">Categoria</label>
-                                <select class="form-select-categoria p-2 border-slate-200 border-2  rounded-md ">
+                                <label for="form-select-category">Categoria</label>
+                                <select class="form-select-category p-2 border-slate-200 border-2  rounded-md ">
                                     <option>Todas</option>
                                     <option>Comida</option>
                                     <option>Servicios</option>
@@ -148,6 +148,7 @@
                     <p class="mt-10 text-xl font-bold">Sin Resultados</p>
                     <p class="mt-4">Cambia los filtros o agrega operaciones</p>
                 </div>
+
                  <!-- Tabla de Operaciones renderizada -->
                 <div class="div-table-container mt-5 px-6">
                     <table class="table-operationsRender">
@@ -219,7 +220,8 @@
     </section>
 
         <!-- Pantalla categorías-->
-        
+
+        <!--Add category-->
             <section id="section-categories" class="section-categories bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
                 <a name="categoria"></a>
                 <div class="">
@@ -229,39 +231,59 @@
                             <label for="input-add" class="text-xl font-bold mt-5">Nombre </label>
                         </div>
                         <div class="w-[100%] flex justify-between">
+
                             <input name="input-add" id="input-add" type="text"
                                 class="w-full p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem]">
-                            <button type="button" id="btn-add-categories"
-                                class=" h-[2.7rem] bg-[#55d8ac] px-6 ms-2 rounded-[0.3rem] text-white">Agregar</button>
+                                <p class="text-red-600 hidden" id="errorNewCategory">Este campo es obligatorio</p>
                         </div>
+                        <button type="button" id="btn-add-categories"
+                                class=" h-[2.7rem] bg-[#55d8ac] px-6 ms-2 rounded-[0.3rem] text-white">Agregar</button>
                     </form>
-                    <ul class="mt-[2rem]" id="container-category">
-        
-        
-                    </ul>
+                    <div id="categories" class="">
+                        <table class="">
+    
+                            <tbody class="flex flex-col" id="container-categories">
+                                
+                            </tbody>
+    
+                        </table>
+                    </div>
                 </div>
             </section>
 
         <!--Edit Category-->
-        <section id="edit-category-section" class="edit-category-section bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
-            <div id="" class="">
-                <h2 class="text-[3rem] mb-[1rem]">Editar Categoría</h2>
-                <form id="edit-category-form" class="">
-                    <div>
-                        <div class="">
-                            <label for="edit-input-category" class="text-xl font-bold">Nombre</label>
-                        </div>
-                        <div class="flex-row">
-                            <input name="edit-input-category" id="edit-input-category" class="w-full p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400" type="text">
-                        <div class="w-full flex justify-end">
-                                <button type="button" class="text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md" id="edit-category-cancel-btn">Cancelar</button>
-                                <button id="edit-category-btn" class="edit-category-btn ext-black bg-[#56d8ac] hover:bg-[#31C594] w-24 p-2 ml-5 mt-5 rounded-md">Editar</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+        <section  id="containerEditCategory" class="hidden">
+            <div class="">
+                <div>
+                    <h2 class="">Editar categoría</h2>
+                    <label for="editCategoryName" class="">Nombre</label>
+                    <input type="text" id="editCategoryName" class="">
+                    <p class="text-red-600 hidden" id="errorEditCategory">Este campo es obligatorio</p>
+                </div>
+                <div class="flex justify-end mt-7 md:mt-14">
+                    <button id="EditCancelButton"
+                        class="">Cancelar</button>
+                    <button id="editCategoryButton"
+                        class="" disabled="true">Editar</button>
+                </div>
             </div>
         </section>
+
+        <!--Remove Category-->
+
+        <section class=" ">
+            <div class="">
+                <p class="">¿Desea eliminar esta categoria? <span id="name"></span></p>
+                <div class="">
+                    <button type="button"
+                        class="cancel">Cancelar
+                    </button>
+                    <button type="button" id="btn-remove-categories"
+                        class="">Eliminar</button>
+                </div>
+            </div>
+        </section>
+    
 
 
     <!-- Pantalla reportes -->
@@ -282,7 +304,7 @@
         <div class="has-reports flex flex-col hidden">
             <div class=" m-10">
                 <h4 class="text-xl font-bold">Resumen</h4>
-                <ul class=""></ul>
+                <ul class="reports-sumary"></ul>
             </div>
             <div class=" m-10">
                 <h4 class="text-xl font-bold">Totales por categoría</h4>

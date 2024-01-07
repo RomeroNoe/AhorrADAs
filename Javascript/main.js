@@ -51,7 +51,7 @@ const renderOperations = (operations) => {
             <td>${operation.day}</td>
             <td>${operation.amount}</td>
             <td>
-                <button class="btn btn-edit text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
+                <button class="containerEditCategory-btn" onclick="editForm('${operation.id}')">Editar</i></button>
                 <button type="button" class="btn btn-remove text-teal-500 hover:text-black" onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
@@ -80,8 +80,8 @@ const saveOperation = () => {
 //Operations
 
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
-/* Add new operation */
 
+/* Add new operation */
 const showOperations = (arrayOperations) => {
     $(".tbody-info-render").innerHTML = "" 
         if (!(arrayOperations.length > 0)) {
@@ -194,7 +194,7 @@ const addNewCategory = (categories) => {
 }
 
 //Delete Category
-
+//btn-remove-categories ¿?
 const deleteCategory = (categoryId) => {
     const categoryName = getCategoryNameById(categoryId)
     const confirmation = confirm(`¿Estás seguro de eliminar la categoría "${categoryName}"?`)
@@ -209,28 +209,58 @@ const deleteCategory = (categoryId) => {
 
 //Edit Category
 
-const viewEditCategory = (categoryId) => {
-    hiddenElement(["#section-newOperation", "#section-reports", "#section-categories", "#section-balance"])
-    $("#edit-category-section").classList.remove('hidden')
-
-    const categoryToEdit = getData("categories").find(category => category.id === categoryId);
-    $("#edit-input-category").value = categoryToEdit.categoryName;
-    $("#edit-category-btn").setAttribute("id-category-selected", categoryId);
+const modifyCategory = (categoryId) => {
+    return {
+        id: categoryId,
+        name: $('#editCategoryName').value,
+    }
 }
 
-const confirmEditCategory = () => {
-    const categoryId = $("#edit-btn-category").getAttribute("id-category-selected");
-    const updatedCategories = getData("categories").map(category => {
+const showEditCategory = (categoryID) => {
+    showScreens("EditCategory")
+    $(".containerEditCategory").setAttribute("data-id" , categoryID)
+    const categoryToEdit = getData("categories").find(category => category.id === categoryID)
+    $("#editCategoryName").value = categoryToEdit.name
+}
+
+const editCategory = () => {
+    const categoryId = $(".containerEditCategory").getAttribute("data-id")
+    const currentData = getData("categories").map(category => {
         if (category.id === categoryId) {
-            category.categoryName = $("#edit-input-category").value;
+            return modifyCategory(categoryId)
         }
-        return category;
-    });
-    
-    setData('categories', updatedCategories);
-    categoriesList(categories)
+        return category
+    })
+    setData("categories", currentData)
+    renderCategories(currentData)
+    renderCategoriesOptions(currentData)
+    renderInputCategoriesOptions(currentData)
+    $("#editCategoryButton").setAttribute("disabled" , true)
 }
 
+
+const renderCategory = (arrayCategorys) => {
+    clear("#container-categories");
+    for (const categorie of arrayCategorys) {
+      just(
+        "#container-categories"
+      ).innerHTML += `<li class="">
+      <p
+          class=" ">
+          ${categorie.category}</p>
+      <div class="">
+          <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
+          <button  class="btn-remove" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
+      </div> `;
+  
+      just(
+        "#form-select-category"
+      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+      just(
+        "#select-category"
+      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+    }
+  };
 
 /*BALANCE*/
 
@@ -425,6 +455,33 @@ const monthWithMaxValue = (property) => {
     return { maxMonth, maxAmount }
 }
 
+//Me habia olvidado de agregar estas funciónes, a las que llamo abajo. Hay que ponerle TAILWIND es lo que se imprime en el resumen (summary) en la tabla de reportes.
+
+const renderCategorySummary = (title, categoryType, amount) => {
+    const { categoryName, maxAmount } = categoryWithMaxValue(categoryType)
+    $(".reports-summary").innerHTML += `
+        <li class="">
+            <p class="">${title}</p>
+            <div class="">
+                <span class="">${categoryName}</span>
+                <span class=" ${amount < 0 ? 'text-red-600' : amount > 0 ? 'text-green-600' : ''}">${amount > 0 ? '+' : amount < 0 ? '-' : ''}$${Math.abs(maxAmount).toFixed(2)}</span>
+            </div>
+        </li>`
+}
+
+
+const renderMonthSummary = (title, property, amount) => {
+    const { maxMonth, maxAmount } = monthWithMaxValue(property)
+    $(".reports-summary").innerHTML += `
+        <li class="">
+            <p class="">${title}</p>
+            <div class="">
+                <span>${getMonthWithYear(maxMonth.month, maxMonth.year)}</span>
+                <span class="${amount < 0 ? 'text-red-600' : 'text-green-600'}">${amount > 0 ? '+' : '-'}$${Math.abs(maxAmount).toFixed(2)}</span>
+            </div>
+        </li>`
+}
+
 // Categoría -> mayor ganancia
 const renderCategoryWithMaxIncome = () => renderCategorySummary("Categoría con mayor ganancia", "totalIncome", 1)
 
@@ -457,6 +514,17 @@ const renderTotalCategories = () => {
             </tr>`
     }
 }
+
+//Recargar Resumen
+const renderSummary = () => {
+    cleanContainer(".reports-summary")
+    renderCategoryWithMaxIncome()
+    renderCategoryWithMaxExpense()
+    renderCategoryWithMaxBalance()
+    renderMonthWithMaxIncome()
+    renderMonthWithMaxExpense()
+}
+
 
 // Carga por mes NECESITA TAILWIND
 const renderTotalMonths = () => {
@@ -495,4 +563,13 @@ const updateReports = () => {
     }
 }
 
-//commit 6-1"Funcionalidades de Reportes, Tabla de reportes a rendeerizar en el html, Editar categoría en el html y funcionalidad en js, reder/total/reset/update de balance"
+
+//Validations
+
+// Categories
+    $("#categoriesInput").addEventListener("input" , () => {
+        validateCategoriesForm("#categoriesInput" , "#errorNewCategory" , "#addCategoryButton")
+    })
+    $("#editCategoryName").addEventListener("input" , () => {
+        validateCategoriesForm("#editCategoryName" , "#errorEditCategory" , "#editCategoryButton")
+    })   
