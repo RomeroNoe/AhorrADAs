@@ -16,7 +16,7 @@
 </head>
 <body class="bg-[#dde0e2] font-['Open_Sans']">
     <!-- Header -->
-<header>
+<header class="flex flex-col">
     <nav class="nav-bar bg-[#56d8ac] p-6 text-white flex justify-between max-lg:p-2">
         <div class="logo-nav-bar">
                 <h1 class="logo-titulo text-white font-medium text-[36px] max-lg:text-[30px]">
@@ -48,18 +48,34 @@
         </div>
             <button class="nav-elemento menu-hamburgesa lg:hidden max-lg:p-2 hover:bg-[#31C594] rounded-md">
                 <i class="fa-solid fa-bars"></i>
-            </button>
-        
+                <i class="fa-solid fa-xmark hidden"></i>
+            </button>  
     </nav>
+    <div class="dropdown-menu drop-shadow-md bg-white flex flex-col justify-items-start hidden">
+        <button class="nav-elemento w-full p-2 text-slate-500 hover:bg-slate-200 hover:text-black text-left" id="balance-sheet-drop">
+            <i class="fa-solid fa-chart-line mr-2"></i>
+            Balance
+        </button>
+        <button class="nav-elemento w-full p-2 text-slate-500 hover:bg-slate-200 hover:text-black text-left" id="categorias-sheet-drop">
+        <i class="fa-solid fa-tag mr-2"></i>
+        Categorías
+        </button>
+        <button class="nav-elemento w-full p-2 text-slate-500 hover:bg-slate-200 hover:text-black text-left" id="reportes-sheet-drop">
+            <i class="fa-solid fa-chart-pie mr-2"></i>
+            Reportes
+        </button>
 
+    </div>   
     </header>
 
     <main class="flex justify-center ">
 
+
+
     <!-- Pantalla Balance/Filtros/Operaciones -->
-        <section class="section-filtros-balance-operaciones p-5 rounded-md ">
+        <section class="section-filtros-balance-operaciones p-5 rounded-md flex">
         <div class="size-full flex max-lg:flex-col">
-            <div class="column-balance flex flex-col w-2/3 max-lg:size-full">
+            <div class="column-balance md:w-2/3 max-lg:size-full">
 
                 <!-- Balance -->
                 <section class="section-balance bg-white p-5 rounded-md m-3 shadow-md">
@@ -129,13 +145,13 @@
                                 </select>
                             </li>
 
-                        </ul>
+                        </ul>               
                     </form>
                 </section>
             </div>
 
         <!-- Operaciones -->
-            <section class="section-operaciones bg-white wp-5 rounded-md m-3 size-full shadow-md">
+            <section class="section-operaciones bg-white wp-5 rounded-md m-3 flex flex-col  shadow-md">
                 <div class="flex flex-row items-center justify-between">
                     <p class="p-5 mb-10 title-section-operaciones text-xl text-left font-bold">Operaciones</p>
                         <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 rounded-md p-3"
@@ -154,11 +170,11 @@
                     <table class="table-operationsRender">
                         <thead>
                             <tr class=""> 
-                                <th class="description p-6">Descripcion</th>
-                                <th class="p-6">Categoria</th>
-                                <th class="p-6">Fecha</th> 
-                                <th class="p-6">Monto</th>
-                                <th class="p-6">Acciones</th>
+                                <th class="description ">Descripcion</th>
+                                <th class="">Categoria</th>
+                                <th class="">Fecha</th> 
+                                <th class="">Monto</th>
+                                <th class="">Acciones</th>
                             </tr>
                         </thead>
     
@@ -173,9 +189,8 @@
 
 
         <!-- Nueva operación -->
-        <!--HAY QUE ACOMODARLO *llora en tailwind*-->
 
-        <section class="section-newOperation bg-white p-5 my-20 rounded-md m-3 w-3/4 hidden">
+        <section class="section-newOperation bg-white p-5 my-20 rounded-md m-3 sm:w-3/4 hidden">
         <div class="bg-white p-8 rounded-md">
             <p class="title-section-newOperation text-xl font-bold mb-4 md:mb-8"
                 id="newOp-tittle">Nueva Operacion</p>
@@ -213,7 +228,7 @@
                     <button class="text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md" id="btn-cancel-newOp">Cancelar</button>
                     <button class="text-black bg-[#56d8ac] hover:bg-[#31C594] w-24 p-2 ml-5 mt-5 rounded-md" id="btn-add-newOp">Agregar</button>
                     <button
-                        class="btn-confirm-edit text-black bg-[#56d8ac] w-24 p-2 ml-7 mt-5 rounded-md hidden">Editar</button>
+                        class="btn-confirm-edit text-black bg-[#56d8ac] w-24 p-2 ml-7 mt-5 rounded-md hover:bg-[#31C594] hidden">Editar</button>
                 </div>
             </div>
         </div>
@@ -222,7 +237,7 @@
         <!-- Pantalla categorías-->
 
         <!--Add category-->
-            <section id="section-categories" class="section-categories bg-white p-5 mt-20 rounded-md m-3 w-3/4 hidden">
+            <section id="section-categories" class="section-categories bg-white p-5 mt-20 rounded-md m-3 sm:w-3/4 hidden">
                 <a name="categoria"></a>
                 <div class="">
                     <h2 class="text-[3rem] mb-[1rem]">Categorías</h2>
@@ -233,16 +248,17 @@
                         <div class="w-[100%] flex justify-between">
 
                             <input name="input-add" id="input-add" type="text"
-                                class="w-full p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem]">
+                                class="w-[85%] p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400">
                                 <p class="text-red-600 hidden" id="errorNewCategory">Este campo es obligatorio</p>
+                            <button type="button" id="btn-add-categories"
+                                        class=" h-[2.7rem] bg-[#55d8ac] px-6 ms-2 rounded-[0.3rem] text-white">Agregar</button>
                         </div>
-                        <button type="button" id="btn-add-categories"
-                                class=" h-[2.7rem] bg-[#55d8ac] px-6 ms-2 rounded-[0.3rem] text-white">Agregar</button>
                     </form>
                     <div id="categories" class="">
                         <table class="">
     
                             <tbody class="flex flex-col" id="container-categories">
+                                
                                 
                             </tbody>
     
@@ -252,34 +268,34 @@
             </section>
 
         <!--Edit Category-->
-        <section  id="containerEditCategory" class="hidden">
-            <div class="">
-                <div>
-                    <h2 class="">Editar categoría</h2>
-                    <label for="editCategoryName" class="">Nombre</label>
-                    <input type="text" id="editCategoryName" class="">
+        <section  id="containerEditCategory" class="bg-white p-5 mt-20 rounded-md m-3 sm:w-3/4 hidden">
+            <div>
+                <div class="flex flex-col">
+                    <h2 class="text-[3rem] mb-[1rem]">Editar categoría</h2>
+                    <label for="editCategoryName" class="text-xl font-bold mt-5">Nombre</label>
+                    <input type="text" id="editCategoryName" class="w-full p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400">
                     <p class="text-red-600 hidden" id="errorEditCategory">Este campo es obligatorio</p>
                 </div>
                 <div class="flex justify-end mt-7 md:mt-14">
                     <button id="EditCancelButton"
-                        class="">Cancelar</button>
+                        class="text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md">Cancelar</button>
                     <button id="editCategoryButton"
-                        class="" disabled="true">Editar</button>
+                        class="text-black bg-[#56d8ac] w-24 p-2 ml-7 mt-5 rounded-md hover:bg-[#31C594]" >Editar</button>
                 </div>
             </div>
         </section>
 
         <!--Remove Category-->
 
-        <section class=" ">
+        <section id="removeCategoryConfirmation" class="bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 hidden">
             <div class="">
                 <p class="">¿Desea eliminar esta categoria? <span id="name"></span></p>
                 <div class="">
                     <button type="button"
-                        class="cancel">Cancelar
+                        class="btn-cancel-delete text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md">Cancelar
                     </button>
                     <button type="button" id="btn-remove-categories"
-                        class="">Eliminar</button>
+                        class="btn-confirm-delete text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md">Eliminar</button>
                 </div>
             </div>
         </section>
@@ -288,12 +304,12 @@
 
     <!-- Pantalla reportes -->
     
-    <section class="section-reports bg-white w-3/4 p-5 mt-20 rounded-md m-3 hidden">
+    <section class="section-reports bg-white sm:w-3/4 p-5 mt-20 rounded-md m-3 hidden">
         <a name="reportes"></a>
         <div class=" ">
             <h2 class="text-[3rem] mb-[1rem]= ">Reportes</h2>
             <div class="none-reports flex items-center flex-col">
-                <img src="./Images/presentation-stand.svg" class="w-1/4 my-10">
+                <img src="./Images/presentation-stand.svg" class="lg:w-1/4 my-10">
                 <h3 class=" text-xl  text-center f">Operaciones insuficientes</h3>
                 <h4 class="text-center mb-[1rem]">Prueba agregando más operaciones</h4>
             </div>

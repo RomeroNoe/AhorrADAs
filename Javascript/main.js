@@ -46,18 +46,20 @@ const renderOperations = (operations) => {
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
-            <td>${operation.description}</td>
-            <td>${operation.category}</td>
-            <td>${operation.day}</td>
-            <td>${operation.amount}</td>
+            <td class="sm:px-6">${operation.description}</td>
+            <td class="sm:px-6">${operation.category}</td>
+            <td class="sm:px-6">${operation.day}</td>
+            <td class="sm:px-6">${operation.amount}</td>
             <td>
-                <button class="containerEditCategory-btn" onclick="editForm('${operation.id}')">Editar</i></button>
+                <button class="containerEditCategory-btn text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
                 <button type="button" class="btn btn-remove text-teal-500 hover:text-black" onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
     }
 }
+
+
 
 
 /* Data handlers */
@@ -195,6 +197,7 @@ const addNewCategory = (categories) => {
 
 //Delete Category
 //btn-remove-categories ¿?
+
 const deleteCategory = (categoryId) => {
     const categoryName = getCategoryNameById(categoryId)
     const confirmation = confirm(`¿Estás seguro de eliminar la categoría "${categoryName}"?`)
@@ -203,6 +206,7 @@ const deleteCategory = (categoryId) => {
         const updatedCategories = getCategories().filter(({id}) => id !== categoryId)
         const updatedOperations = getOperations().filter(({category}) => category !== categoryId)
         updateData(updatedCategories, updatedOperations)
+        
     } else {
     }//Acá tambien podemos ponerle una ventana por si cancela el confirm. (algo tipo "Eliminación de categoria cancelada")
 }
@@ -323,6 +327,12 @@ const initializeApp = () => {
         hideElement([".section-filtros-balance-operaciones", ".btn-confirm-edit"])
     })
 
+    $(".menu-hamburgesa").addEventListener("click", () => {
+        $(".fa-bars").classList.toggle("hidden")
+        $(".fa-xmark").classList.toggle("hidden")
+        $(".dropdown-menu").classList.toggle("hidden")
+    })
+
     $("#categorias-sheet").addEventListener("click", () => {
         showElement([".section-categories"])
         hideElement([".section-filtros-balance-operaciones", ".section-newOperation", ".section-reports"])
@@ -337,6 +347,22 @@ const initializeApp = () => {
         hideElement([".section-categories", ".section-newOperation", ".section-reports"])
         showElement([".section-filtros-balance-operaciones"])
     })
+
+    $("#categorias-sheet-drop").addEventListener("click", () => {
+        showElement([".section-categories"])
+        hideElement([".section-filtros-balance-operaciones", ".section-newOperation", ".section-reports"])
+    })
+
+    $("#reportes-sheet-drop").addEventListener("click", () => {
+        showElement([".section-reports"])
+        hideElement([".section-filtros-balance-operaciones", ".section-categories", ".section-newOperation"])
+    })
+
+    $("#balance-sheet-drop").addEventListener("click", () => {
+        hideElement([".section-categories", ".section-newOperation", ".section-reports"])
+        showElement([".section-filtros-balance-operaciones"])
+    })
+    
 
     // Action buttons
 
@@ -362,7 +388,7 @@ const initializeApp = () => {
             if(operation.id === operationId) {
                 return saveOperation(operationId)
             }
-            return operation
+            // return operation
         })
         setData("operations", currentData )
         window.location.reload()
@@ -374,9 +400,20 @@ const initializeApp = () => {
         addNewCategory();
     })
 
+    $(".btn-cancel-delete").addEventListener("click", () => {
+        hideElement(["#removeCategoryConfirmation"])
+        showElement([".section-categories"])
+    })
 
-
-
+    $(".btn-confirm-delete").addEventListener("click", () => {
+        const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
+        if (categoryIdToDelete) {
+            deleteCategory(categoryIdToDelete)
+            hideElement(["#removeCategoryConfirmation"])
+            showElement(["#section-categories"])
+            window.location.reload()
+        }
+    })
 }
 
 window.addEventListener("load", initializeApp)
@@ -567,9 +604,9 @@ const updateReports = () => {
 //Validations
 
 // Categories
-    $("#categoriesInput").addEventListener("input" , () => {
-        validateCategoriesForm("#categoriesInput" , "#errorNewCategory" , "#addCategoryButton")
-    })
-    $("#editCategoryName").addEventListener("input" , () => {
-        validateCategoriesForm("#editCategoryName" , "#errorEditCategory" , "#editCategoryButton")
-    })   
+    // $("#categoriesInput").addEventListener("input" , () => {
+    //     validateCategoriesForm("#categoriesInput" , "#errorNewCategory" , "#addCategoryButton")
+    // })
+    // $("#editCategoryName").addEventListener("input" , () => {
+    //     validateCategoriesForm("#editCategoryName" , "#errorEditCategory" , "#editCategoryButton")
+    // })   
