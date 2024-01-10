@@ -3,14 +3,12 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-const randomId = () => self.crypto.randomUUID()
-// const randomId = () => {
-//     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-//       return crypto.randomUUID();
-//     }
-//   };
-
-const cleanContainer = (selector) => $(selector).innerHTML = ""
+//const randomId = () => self.crypto.randomUUID()
+const randomId = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+  };
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -25,29 +23,30 @@ const hideElement = (selectors) => {
 }
 
 /*LOCAL STORAGE */
-//const getData = (key) => JSON.parse(localStorage.getItem(key))
+const getData = (key) => JSON.parse(localStorage.getItem(key))
 
-const getData = (key) => {
-    if (typeof localStorage !== 'undefined') {
-      // Verificar si localStorage está definido
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
-    } 
-  };
+// const getData = (key) => {
+//     if (typeof localStorage !== 'undefined') {
+//       // Verificar si localStorage está definido
+//       const item = localStorage.getItem(key);
+//       return item ? JSON.parse(item) : null;
+//     } 
+//   };
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 
-//Date ROMPE TODO DATE PORQUEEEE
 
-// const today = new Date()
+const allCategories = getData("categories") || defaultCategories
+const allOperations = getData("operations") || []
 
-// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-// $("#op-input-date").valueAsDate = date
-// console.log(date)
 
-// const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-// $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
+
+//Date 
+
+const today = new Date()
+const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+
 
 /* RENDERS*/
 
@@ -73,10 +72,10 @@ const renderCategoriesTable = (categories) => {
     cleanContainer("#container-categories")
     for (const {id, name} of categories) {
         $("#container-categories").innerHTML += `
-            <div class="">
-                <p class="">${name}</p>
+            <div class="mb-6">
+                <p class="px-3">${name}</p>
                 <div>
-                    <span class="edit-btn" data-id="${id}">Editar</span>
+                    <span class="edit-btn mr-4" data-id="${id}">Editar</span>
                     <span class="delete-btn" data-id="${id}">Eliminar</span>
                 </div>
             </div>`
@@ -109,32 +108,51 @@ const renderOperations = (operations) => {
     } else {
         showElement([".no-operations"])
         hideElement([".div-table-container"])
-        
-}
+    }
+    $(".form-select-category").innerHTML += `
+
+    `
 }
 
-const renderCategory = (arrayCategorys) => {
-    clear("#container-categories");
-    for (const categorie of arrayCategorys) {
-      just(
-        "#container-categories"
-      ).innerHTML += `<li class="">
-      <p
-          class=" ">
-          ${categorie.category}</p>
-      <div class="">
-          <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
-          <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
-      </div> `;
-  
-      just(
-        "#form-select-category"
-      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
-      just(
-        "#select-category"
-      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+
+const renderCategory = (categories) => {
+    cleanContainer("#container-categories")
+    for (const {id, name} of categories) {
+        $("#container-categories").innerHTML += `
+            <div class="mb-6 flex justify-between items-center">
+                <p class="px-3 py-1 text-xs bg-emerald-50 rounded">${name}</p>
+                <div>
+                    <span class="edit-btn mr-4 text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Editar</span>
+                    <span class="delete-btn text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Eliminar</span>
+                </div>
+            </div>`
     }
-  };
+    getIdButton($$(".edit-btn"), (id) => showEditCategory(id))
+    getIdButton($$(".delete-btn"), (id) => deleteCategory(id))
+}
+
+// const renderCategory = (arrayCategorys) => {
+//     clear("#container-categories");
+//     for (const categorie of arrayCategorys) {
+//       just(
+//         "#container-categories"
+//       ).innerHTML += `<li class="">
+//       <p
+//           class=" ">
+//           ${categorie.category}</p>
+//       <div class="">
+//           <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
+//           <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
+//       </div> `;
+  
+//       just(
+//         "#form-select-category"
+//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+//       just(
+//         "#select-category"
+//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+//     }
+//   };
 
   const renderBalance = () => {
     if(getData("operationsLS") === "[]"){
@@ -436,20 +454,6 @@ const handleEditOperation = () => {
 }
 
 //Categories
-
-//Obtener categoría por ID
-
-const defaultCategories = [
-            { id: randomId(), name: "Comida" },
-            { id: randomId(), name: "Servicios" },
-            { id: randomId(), name: "Salidas" },
-            { id: randomId(), name: "Educación" },
-            { id: randomId(), name: "Transporte" },
-            { id: randomId(), name: "Trabajo" }       
-]
-
-const allCategories = getData("categories") || defaultCategories
-const allOperations = getData("operations") || []
 
 
 //Obtener categoría por ID
@@ -782,33 +786,20 @@ const initializeApp = () => {
 
     // Filters
 
- 
     
     $(".form-select-tipo").addEventListener("input", (e) => {
-        e.preventDefault()
-        const selectedType = e.target.value
-    
-        if (selectedType === "todos") {
-            
-            renderOperations(getData("operations"))
-        } else {
-            
-            const currentData = getData("operations")
-            const filterOperationType = currentData.filter(operations => operations.type === selectedType)
-            renderOperations(filterOperationType)
-        }
+        const operationId = e.target.value
+        const currentData = getData("operations")
+        const filterOperations = currentData.filter(operation => operation.type === operationId)
+        renderOperations(filterOperations)
     })
 
+    //Filtro por categoría
     $(".form-select-category").addEventListener("input", (e) => {
-        e.preventDefault()
-        const selectedCategory = e.target.value
-        if (selectedCategory === "Todas") {
-            renderOperations(getData("operations"))
-        } else {
-            const currentData = getData("operations")
-            const filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
-            renderOperations(filterOperationCategory)
-        }
+        const operationId = e.target.value
+        const currentData = getData("operations")
+        const filterOperations = currentData.filter(operation => operation.category === operationId)
+        renderOperations(filterOperations)
     })
 
     $(".input-date").addEventListener("input", (e) => {
@@ -833,6 +824,7 @@ $(".form-select-order").addEventListener("input", (e) => {
     const selectedOption = e.target.value;
     const currentData = getData("operations");
 
+    // Sort operations based on the selected option
     let sortedOperations;
     switch (selectedOption) {
         case "Mas reciente":

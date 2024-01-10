@@ -135,7 +135,7 @@
 
                             <li class="section-filtros-ordenar mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="">Ordenar por</label>
-                                <select id="form-select-order" class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
+                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
                                     <option>Mas reciente</option>
                                     <option>Menos reciente</option>
                                     <option>Mayor monto</option>
@@ -259,35 +259,34 @@
 
         <!--Add category-->
             <section id="section-categories" class="section-categories bg-white p-5 mt-20 rounded-md m-3 sm:w-3/4 hidden">
+
                 <a name="categoria"></a>
+
                 <div class="">
                     <h2 class="text-[3rem] mb-[1rem]">Categorías</h2>
-                    <form  id="form-category">
+
                         <div class="mb-[0.5rem]">
                             <label for="input-add" class="text-xl font-bold mt-5">Nombre </label>
                         </div>
+
                         <div class="w-[100%] flex justify-between">
 
                             <input name="input-add" id="input-add" type="text"
-                                class="w-[100%] p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400">
+                                class="w-[85%] p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400">
                                 <p class="text-red-600 hidden" id="errorNewCategory">Este campo es obligatorio</p>
+
                             <button type="button" id="btn-add-categories"
                                         class=" h-[2.7rem] bg-[#55d8ac] px-6 ms-2 rounded-[0.3rem] text-white">Agregar</button>
+
                         </div>
-                    </form>
-                    <div id="categories" class="">
-                        <table class="">
-    
-                            <tbody class="" id="container-categories">
-                                
-                                
-                            </tbody>
-    
-                        </table>
-                    </div>
+
                 </div>
+
                 <div id="error-message" class="hidden text-red-600">
                     El nombre de la categoría no puede estar vacío.
+                </div>
+
+                <div id="container-categories" class="categories mt-7">
                 </div>
 
             </section>
