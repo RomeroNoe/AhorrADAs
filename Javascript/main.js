@@ -3,11 +3,12 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
+//const randomId = () => self.crypto.randomUUID()
 const randomId = () => {
-    if (typeof document !== "undefined") {
-    self.crypto.randomUUID()
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
     }
-} //de esta manera no tenemos el error undefined
+  };
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -23,11 +24,15 @@ const hideElement = (selectors) => {
 const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
+//const getData = (key) => JSON.parse(localStorage.getItem(key))
+
 const getData = (key) => {
-    if (typeof document !== "undefined") {
-    JSON.parse(localStorage.getItem(key))
-}
-} //de esta manera no tenemos el error undefined
+    if (typeof localStorage !== 'undefined') {
+      // Verificar si localStorage está definido
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
+    } 
+  };
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
@@ -438,17 +443,14 @@ const handleEditOperation = () => {
 
 //Obtener categoría por ID
 
-const defaultCategories = {
-    categories : [
-        { id: randomId(), name: "Comida" },
-        { id: randomId(), name: "Servicios" },
-        { id: randomId(), name: "Salidas" },
-        { id: randomId(), name: "Educación" },
-        { id: randomId(), name: "Transporte" },
-        { id: randomId(), name: "Trabajo" }
-    ],
-    transactions : []
-}
+const defaultCategories = [
+            { id: randomId(), name: "Comida" },
+            { id: randomId(), name: "Servicios" },
+            { id: randomId(), name: "Salidas" },
+            { id: randomId(), name: "Educación" },
+            { id: randomId(), name: "Transporte" },
+            { id: randomId(), name: "Trabajo" }       
+]
 
 const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
@@ -782,4 +784,7 @@ console.log($(".btn-confirm-delete"))
     })
 }
 
-window.addEventListener("load", initializeApp)
+if (typeof window !== 'undefined') {
+    // Verificar si el objeto window está definido
+    window.addEventListener("load", initializeApp);
+  } 
