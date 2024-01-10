@@ -147,9 +147,10 @@ const renderCategory = (arrayCategorys) => {
 }
 
 // Renders- Reports
-const renderCategorySummary = (title, categoryType, amount) => {
+
+const renderCategoryResume = (title, categoryType, amount) => {
     const { categoryName, maxAmount } = categoryWithMaxValue(categoryType)
-    $(".reports-summary").innerHTML += `
+    $(".reports-resume").innerHTML += `
         <li class="">
             <p class="">${title}</p>
             <div class="">
@@ -160,9 +161,9 @@ const renderCategorySummary = (title, categoryType, amount) => {
 }
 
 
-const renderMonthSummary = (title, property, amount) => {
+const renderMonthResume = (title, property, amount) => {
     const { maxMonth, maxAmount } = monthWithMaxValue(property)
-    $(".reports-summary").innerHTML += `
+    $(".reports-resume").innerHTML += `
         <li class="">
             <p class="">${title}</p>
             <div class="">
@@ -173,19 +174,19 @@ const renderMonthSummary = (title, property, amount) => {
 }
 
 // Categoría -> mayor ganancia
-const renderCategoryWithMaxIncome = () => renderCategorySummary("Categoría con mayor ganancia", "totalIncome", 1)
+const renderCategoryWithMaxIncome = () => renderCategoryResume("Categoría con mayor ganancia", "totalIncome", 1)
 
 // Categoría -> mayor gasto
-const renderCategoryWithMaxExpense = () => renderCategorySummary("Categoría con mayor gasto", "totalExpense", -1)
+const renderCategoryWithMaxExpense = () => renderCategoryResume("Categoría con mayor gasto", "totalExpense", -1)
 
 // Categoría -> mayor balance
-const renderCategoryWithMaxBalance = () => renderCategorySummary("Categoría con mayor balance", "totalBalance", 0)
+const renderCategoryWithMaxBalance = () => renderCategoryResume("Categoría con mayor balance", "totalBalance", 0)
 
 // Mes -> mayor ganancia
-const renderMonthWithMaxIncome = () => renderMonthSummary("Mes con mayor ganancia", "totalIncome", 1)
+const renderMonthWithMaxIncome = () => renderMonthResume("Mes con mayor ganancia", "totalIncome", 1)
 
 // Mes -> mayor gasto
-const renderMonthWithMaxExpense = () => renderMonthSummary("Mes con mayor gasto", "totalExpense", -1)
+const renderMonthWithMaxExpense = () => renderMonthResume("Mes con mayor gasto", "totalExpense", -1)
 
 
 const renderTotalCategories = () => {
@@ -204,8 +205,8 @@ const renderTotalCategories = () => {
 }
 
 //Recargar Resumen
-const renderSummary = () => {
-    cleanContainer(".reports-summary")
+const renderResume = () => {
+    cleanContainer(".reports-resume")
     renderCategoryWithMaxIncome()
     renderCategoryWithMaxExpense()
     renderCategoryWithMaxBalance()
@@ -614,6 +615,22 @@ const monthWithMaxValue = (property) => {
         }
     }
     return { maxMonth, maxAmount }
+}
+
+const categoryWithMaxValue = (property) => {
+    const totalAmounts = totalAmountByCategory()
+    let maxCategory = Object.keys(totalAmounts)[0]
+
+    for (const category in totalAmounts) {
+        if (totalAmounts[category][property] > totalAmounts[maxCategory][property]) {
+            maxCategory = category
+        }
+    }
+
+    const categoryName = getCategoryNameById(maxCategory)
+    const maxAmount = totalAmounts[maxCategory][property]
+
+    return { categoryName, maxAmount }
 }
 
 
