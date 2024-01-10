@@ -3,12 +3,13 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-//const randomId = () => self.crypto.randomUUID()
 const randomId = () => {
     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
       return crypto.randomUUID();
     }
   };
+
+const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -23,30 +24,29 @@ const hideElement = (selectors) => {
 }
 
 /*LOCAL STORAGE */
-const getData = (key) => JSON.parse(localStorage.getItem(key))
+//const getData = (key) => JSON.parse(localStorage.getItem(key))
 
-// const getData = (key) => {
-//     if (typeof localStorage !== 'undefined') {
-//       // Verificar si localStorage está definido
-//       const item = localStorage.getItem(key);
-//       return item ? JSON.parse(item) : null;
-//     } 
-//   };
+const getData = (key) => {
+    if (typeof localStorage !== 'undefined') {
+      // Verificar si localStorage está definido
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
+    } 
+  };
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 
+//Date ROMPE TODO DATE PORQUEEEE
 
-const allCategories = getData("categories") || defaultCategories
-const allOperations = getData("operations") || []
+// const today = new Date()
 
+// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+// $("#op-input-date").valueAsDate = date
+// console.log(date)
 
-
-//Date 
-
-const today = new Date()
-const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-
+// const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+// $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
 /* RENDERS*/
 
@@ -72,10 +72,10 @@ const renderCategoriesTable = (categories) => {
     cleanContainer("#container-categories")
     for (const {id, name} of categories) {
         $("#container-categories").innerHTML += `
-            <div class="mb-6">
-                <p class="px-3">${name}</p>
+            <div class="">
+                <p class="">${name}</p>
                 <div>
-                    <span class="edit-btn mr-4" data-id="${id}">Editar</span>
+                    <span class="edit-btn" data-id="${id}">Editar</span>
                     <span class="delete-btn" data-id="${id}">Eliminar</span>
                 </div>
             </div>`
@@ -108,51 +108,32 @@ const renderOperations = (operations) => {
     } else {
         showElement([".no-operations"])
         hideElement([".div-table-container"])
-    }
-    $(".form-select-category").innerHTML += `
-
-    `
+        
+}
 }
 
-
-const renderCategory = (categories) => {
-    cleanContainer("#container-categories")
-    for (const {id, name} of categories) {
-        $("#container-categories").innerHTML += `
-            <div class="mb-6 flex justify-between items-center">
-                <p class="px-3 py-1 text-xs bg-emerald-50 rounded">${name}</p>
-                <div>
-                    <span class="edit-btn mr-4 text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Editar</span>
-                    <span class="delete-btn text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Eliminar</span>
-                </div>
-            </div>`
-    }
-    getIdButton($$(".edit-btn"), (id) => showEditCategory(id))
-    getIdButton($$(".delete-btn"), (id) => deleteCategory(id))
-}
-
-// const renderCategory = (arrayCategorys) => {
-//     clear("#container-categories");
-//     for (const categorie of arrayCategorys) {
-//       just(
-//         "#container-categories"
-//       ).innerHTML += `<li class="">
-//       <p
-//           class=" ">
-//           ${categorie.category}</p>
-//       <div class="">
-//           <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
-//           <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
-//       </div> `;
+const renderCategory = (arrayCategorys) => {
+    clear("#container-categories");
+    for (const categorie of arrayCategorys) {
+      just(
+        "#container-categories"
+      ).innerHTML += `<li class="">
+      <p
+          class=" ">
+          ${categorie.category}</p>
+      <div class="">
+          <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
+          <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
+      </div> `;
   
-//       just(
-//         "#form-select-category"
-//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
-//       just(
-//         "#select-category"
-//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
-//     }
-//   };
+      just(
+        "#form-select-category"
+      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+      just(
+        "#select-category"
+      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+    }
+  };
 
   const renderBalance = () => {
     if(getData("operationsLS") === "[]"){
@@ -388,11 +369,9 @@ const ejecutionDeleteBtn = (operationId, operationDescription) => {
 const deleteOperation = (operationId) => {
     const currentData = getData("operations").filter(operation => operation.id != operationId);
     setData("operations", currentData);
-    
     window.location.reload()
 
 }
-
 
 // Edit Form
 
@@ -454,6 +433,20 @@ const handleEditOperation = () => {
 }
 
 //Categories
+
+//Obtener categoría por ID
+
+const defaultCategories = [
+            { id: randomId(), name: "Comida" },
+            { id: randomId(), name: "Servicios" },
+            { id: randomId(), name: "Salidas" },
+            { id: randomId(), name: "Educación" },
+            { id: randomId(), name: "Transporte" },
+            { id: randomId(), name: "Trabajo" }       
+]
+console.log(defaultCategories)
+const allCategories = getData("categories") || defaultCategories
+const allOperations = getData("operations") || []
 
 
 //Obtener categoría por ID
@@ -753,53 +746,66 @@ const initializeApp = () => {
     })
 
 
-    // Categories
-    // Add Category
+//     // Categories
+//     // Add Category
 
-    // $("#btn-add-categories").addEventListener("click", (e) => {
-    //     e.preventDefault()
-    //     addNewCategory()
-    // })
+    $("#btn-add-categories").addEventListener("click", (e) => {
+        e.preventDefault()
+        saveCategory()
+    })
 
-    // Delete category
+//     // Delete category
    
-    // $(".btn-remove-categories").addEventListener("click", () => {
-    //     showElement(["#removeCategoryConfirmation"])
+//     // $(".btn-remove-categories").addEventListener("click", () => {
+//     //     showElement(["#removeCategoryConfirmation"])
         
-    // })
+//     // })
 
-    // $(".btn-cancel-delete").addEventListener("click", () => {
-    //     hideElement(["#removeCategoryConfirmation"])
-    // })
+//     // $(".btn-cancel-delete").addEventListener("click", () => {
+//     //     hideElement(["#removeCategoryConfirmation"])
+//     // })
 
-    // $(".btn-confirm-delete").addEventListener("click", () => {
-    //     const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
-    //     if (categoryIdToDelete) {
-    //         deleteCategory(categoryIdToDelete)
-    //         hideElement(["#removeCategoryConfirmation"])
-    //         window.location.reload()
-    //     }
-    // })
-    ;  // Check if this selects the correct button
-// console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
-// console.log($(".btn-confirm-delete"))
+//     // $(".btn-confirm-delete").addEventListener("click", () => {
+//     //     const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
+//     //     if (categoryIdToDelete) {
+//     //         deleteCategory(categoryIdToDelete)
+//     //         hideElement(["#removeCategoryConfirmation"])
+//     //         window.location.reload()
+//     //     }
+//     // })
+//     ;  // Check if this selects the correct button
+// // console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
+// // console.log($(".btn-confirm-delete"))
 
     // Filters
 
+ 
     
     $(".form-select-tipo").addEventListener("input", (e) => {
-        const operationId = e.target.value
-        const currentData = getData("operations")
-        const filterOperations = currentData.filter(operation => operation.type === operationId)
-        renderOperations(filterOperations)
+        e.preventDefault()
+        const selectedType = e.target.value
+    
+        if (selectedType === "todos") {
+            
+            renderOperations(getData("operations"))
+        } else {
+            
+            const currentData = getData("operations")
+            const filterOperationType = currentData.filter(operations => operations.type === selectedType)
+            renderOperations(filterOperationType)
+        }
     })
 
-    //Filtro por categoría
     $(".form-select-category").addEventListener("input", (e) => {
-        const operationId = e.target.value
-        const currentData = getData("operations")
-        const filterOperations = currentData.filter(operation => operation.category === operationId)
-        renderOperations(filterOperations)
+        e.preventDefault()
+        const selectedCategory = e.target.value
+        if (selectedCategory === "Todas") {
+            renderOperations(getData("operations"))
+        } else {
+            const currentData = getData("operations")
+            const filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
+            renderOperations(filterOperationCategory)
+        }
     })
 
     $(".input-date").addEventListener("input", (e) => {
@@ -824,7 +830,6 @@ $(".form-select-order").addEventListener("input", (e) => {
     const selectedOption = e.target.value;
     const currentData = getData("operations");
 
-    // Sort operations based on the selected option
     let sortedOperations;
     switch (selectedOption) {
         case "Mas reciente":
