@@ -287,7 +287,6 @@ const updateData = (updatedCategories, updatedOperations) => {
 
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
 
-
 const saveOperation = () => {
     return{
         id: randomId(),
@@ -312,10 +311,9 @@ const saveCategory = () => {
 // Delete operation
 
 const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-remove").setAttribute("data-id", operationId)
-    $(".description").innerText = `${operationDescription}`
-    $(".btn-remove").addEventListener("click", () => {
-        const operationId = $(".btn-remove").getAttribute("data-id")
+    $("#btn-remove-operations").setAttribute("data-id", operationId)
+    $("#btn-remove-operations").addEventListener("click", () => {
+        const operationId = $("#btn-remove-operations").getAttribute("data-id")
         deleteOperation(operationId);
         showOperations(getData("operations"));
 
@@ -367,26 +365,6 @@ const showOperations = (arrayOperations) => {
   }
 }
 
-
-// Delete operation
-
-const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-remove").setAttribute("data-id", operationId)
-    $(".description").innerText = `${operationDescription}`
-    $(".btn-remove").addEventListener("click", () => {
-        const operationId = $(".btn-remove").getAttribute("data-id")
-        deleteOperation(operationId);
-        showOperations(getData("operations"));
-
-    });
-}
-
-const deleteOperation = (operationId) => {
-    const currentData = getData("operations").filter(operation => operation.id != operationId);
-    setData("operations", currentData);
-    window.location.reload()
-
-}
 
 
 // Edit Form
@@ -718,10 +696,9 @@ const initializeApp = () => {
 
     // Delete category
    
-    $(".btn-remove-categories").addEventListener("click", () => {
-        showElement(["#removeCategoryConfirmation"]);
-        console.log($(".btn-remove-categories"))
-    })
+    // $(".btn-remove-categories").addEventListener("click", () => {
+    //     showElement(["#removeCategoryConfirmation"])
+    // })
 
     // $(".btn-cancel-delete").addEventListener("click", () => {
     //     hideElement(["#removeCategoryConfirmation"])
@@ -735,9 +712,6 @@ const initializeApp = () => {
             window.location.reload()
         }
     })
-    ;  // Check if this selects the correct button
-console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
-console.log($(".btn-confirm-delete"))
 
     // Filters
 

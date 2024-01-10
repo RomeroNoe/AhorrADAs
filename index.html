@@ -82,23 +82,19 @@
                     <a name="balance"></a>
                     <p class="title-balance text-xl font-bold mb-10">Balance</p>
                     <ul class="balance-ul">
-
                         <li class="section-balance-ganancias flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Ganancias</p>
-                            <p class="text-lime-500" id="total-profit">+$0.00</p>
+                            <p class="text-lime-500" id="total-profit"></p>
                         </li>
-
                         <li class="section-balance-gastos flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Gastos</p>
-                            <p class="text-red-600" id="total-cost">-$0.00</p>
+                            <p class="text-red-600" id="total-cost"></p>
                         </li>
-
                         <li class="section-balance-total flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Total</p>
-                            <p class="" id="total">$0.00</p>
+                            <p class="" id="total"></p>
                         </li>
                     </ul>
-
                 </section>
 
         <!-- Filtros -->
@@ -225,7 +221,7 @@
                 </select>
 
                 <label for="op-input-date" class="font-bold">Fecha</label>
-                <input type="date" id="op-input-date" class="op-input-date p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md hover:border-gray-400" name="date" placeholder="Fecha"
+                <input type="date" id="op-input-date" class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md hover:border-gray-400" name="date" placeholder="Fecha"
                     required>
             </form>
             <div class="w-full flex justify-end">
@@ -311,7 +307,7 @@
 
         <!--Remove Category-->
 
-        <section id="removeCategoryConfirmation" class="bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 fixed  transform  -translate-y-[-5%] z-50 hidden">
+        <section id="removeCategoryConfirmation" class="hidden bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 fixed  transform  -translate-y-[-5%] z-50 ">
             <div class="">
                 <p class="">¿Desea eliminar esta categoria? <span id="name"></span></p>
                 <div class="">
@@ -358,7 +354,7 @@
                                 <th class="">Balance</th>
                             </tr>
                         </thead>
-                        <tbody class="reports-categories"></tbody>
+                        <tbody class=""></tbody>
                     </table>
                 </div>  
             </div>
