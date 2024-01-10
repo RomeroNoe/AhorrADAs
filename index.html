@@ -101,10 +101,11 @@
             <section class="section-filtros bg-white p-5 rounded-md m-3 shadow-md">
                     <div class="flex flex-row items-center justify-between mb-4 md:mb-8">
                         <p class="title-filtros text-xl text-left font-bold">Filtros</p>
-                        <button class="remove-filters-btn text-sm font-medium text-right">Ocultar Filtros</button>
+                        <button class="hide-filters-btn text-sm font-medium text-right">Ocultar Filtros</button>
+                        <button class="show-filters-btn text-sm font-medium text-right hidden">Mostrar filtros</button>
                     </div>
 
-                    <form>
+                    <form class="form-filtros">
 
                         <ul class="form-filtros-ul">
                             <li class="section-filtros-tipo mb-2 md:mb-4 flex flex-col flex-col ">
@@ -139,7 +140,7 @@
                                 <select class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
                                     <option>Mas reciente</option>
                                     <option>Menos reciente</option>
-                                    <option>Mayo monto</option>
+                                    <option>Mayor monto</option>
                                     <option>Menor monto</option>
                                     <option>A-Z</option>
                                     <option>Z-A</option>
@@ -148,6 +149,10 @@
 
                         </ul>               
                     </form>
+                    <div class="flex justify-end">
+
+                        <button class="remove-filters-btn text-sm text-white font-medium  bg-[#56d8ac] p-2 rounded hover:bg-[#31C594]">Eliminar Filtros</button>
+                    </div>
                 </section>
             </div>
 
