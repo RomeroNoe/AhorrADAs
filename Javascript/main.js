@@ -40,11 +40,16 @@ const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 // const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
 // $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
+
 /* RENDERS*/
 
 // Renders-Balance
 
 const renderOperations = (operations) => {
+    cleanContainer(".tbody-info-render")
+    if (operations.length) {
+        hideElement([".no-operations"])
+        showElement([".div-table-container"])
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
@@ -53,13 +58,24 @@ const renderOperations = (operations) => {
             <td class="sm:px-6">${operation.day}</td>
             <td class="sm:px-6">${operation.amount}</td>
             <td>
-                <button class="containerEditCategory-btn text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="btn btn-remove text-teal-500 hover:text-black" onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button class="containerEditOperation-btn text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
+                <button type="button" class="btn removeOperation-btn text-teal-500 hover:text-black" onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
     }
+    } else {
+        showElement([".no-operations"])
+        hideElement([".div-table-container"])
+    }
+    $(".form-select-category").innerHTML += `
+
+    `
 }
+    
+
+
+
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -72,7 +88,7 @@ const renderCategory = (arrayCategorys) => {
           ${categorie.category}</p>
       <div class="">
           <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
-          <button  class="btn-remove" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
+          <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
       </div> `;
   
       just(
@@ -195,22 +211,22 @@ const saveOperation = () => {
 }
 // No estoy segura si hace falta anadir esto: 
 
-// const saveCategory = () => {
-//     return {
-//         id: randomId(),
-//         name: $("#input-add"),
-//     }   
-// }
+const saveCategory = () => {
+    return {
+        id: randomId().value,
+        name: $("#input-add"),
+    }   
+}
 
 
 
 // Delete operation
 
 const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-remove").setAttribute("data-id", operationId)
+    $(".btn-confirm-delete-operation").setAttribute("data-id", operationId)
     $(".description").innerText = `${operationDescription}`
-    $(".btn-remove").addEventListener("click", () => {
-        const operationId = $(".btn-remove").getAttribute("data-id")
+    $(".btn-confirm-delete-operation").addEventListener("click", () => {
+        const operationId = $(".btn-confirm-delete-operation").getAttribute("data-id")
         deleteOperation(operationId);
         showOperations(getData("operations"));
 
@@ -410,7 +426,7 @@ const calculateBalance = (transactions) => {
     return { totalIncome, totalExpense, totalBalance }
 }
 
-//Reports
+//REPORTS
 
 // Total de ganancias, gastos y balance por mes
 const totalAmountByMonth = () => {
@@ -690,6 +706,24 @@ const initializeApp = () => {
 
     })
 
+    // Delete Operation 
+    $(".removeOperation-btn").addEventListener("click", () => {
+        showElement(["#removeOperationConfirmation"])
+    })
+
+    $(".btn-cancel-delete-operation").addEventListener("click", () => {
+        hideElement(["#removeOperationConfirmation"])
+    })
+
+    $(".btn-confirm-delete-operation").addEventListener("click", () => {
+        const operationIdToDelete = $(".btn-confirm-delete-operation").getAttribute("data-operation-id");
+        if (operationIdToDelete) {
+            deleteOperation(operationIdToDelete)
+            hideElement(["#removeOperationConfirmation"])
+            window.location.reload()
+        }
+    })
+
     // Categories
     // Add Category
 
@@ -699,20 +733,42 @@ const initializeApp = () => {
     })
 
     // Delete category
-
-    $(".btn-cancel-delete").addEventListener("click", () => {
-        hideElement(["#removeCategoryConfirmation"])
-        showElement([".section-categories"])
+   
+    $(".btn-remove-categories").addEventListener("click", () => {
+        showElement(["#removeCategoryConfirmation"]);
+        console.log($(".btn-remove-categories"))
     })
+
+    // $(".btn-cancel-delete").addEventListener("click", () => {
+    //     hideElement(["#removeCategoryConfirmation"])
+    // })
 
     $(".btn-confirm-delete").addEventListener("click", () => {
         const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
         if (categoryIdToDelete) {
             deleteCategory(categoryIdToDelete)
             hideElement(["#removeCategoryConfirmation"])
-            showElement(["#section-categories"])
             window.location.reload()
         }
+    })
+    ;  // Check if this selects the correct button
+console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
+console.log($(".btn-confirm-delete"))
+
+    // Filters
+
+    $(".form-select-tipo").addEventListener("input", (e) => {
+        const operationId = e.target.value
+        const currentData = getData("operations")
+        const filterOperations = currentData.filter(operation => operation.type === operationId)
+        renderOperations(filterOperations)
+    })
+
+    $(".form-select-category").addEventListener("input", (e) => {
+        const operationId = e.target.value
+        const currentData = getData("operations")
+        const filterOperations = currentData.filter(operation => operation.category === operationId)
+        renderOperations(filterOperations)
     })
 }
 

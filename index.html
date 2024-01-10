@@ -110,6 +110,7 @@
                             <li class="section-filtros-tipo mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="form-select-tipo">Tipo</label>
                                 <select class="form-select-tipo p-2 border-slate-200 border-2 rounded-md">
+                                    <option>Todos</option>
                                     <option>Gasto</option>
                                     <option>Ganancia</option>
                                 </select>
@@ -157,7 +158,7 @@
                         <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 rounded-md p-3"
                         id="btn-newOp">+ Nueva Operación</button>
                 </div>
-                <div class="mt-10 flex items-center flex-col hidden">
+                <div class="no-operations mt-10 flex items-center flex-col hidden">
                     <figure class="flex justify-center p-6">
                         <img class="w-2/5" src="./Images/wallet.svg" alt="Sin Resultados">
                     </figure>
@@ -234,6 +235,21 @@
         </div>
     </section>
 
+     <!--Remove Operation-->
+
+     <section id="removeOperationConfirmation" class="bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 fixed  transform  -translate-y-[-5%] z-50 hidden">
+        <div class="">
+            <p class="">¿Desea eliminar esta operacion? <span id="operation-name"></span></p>
+            <div class="">
+                <button type="button"
+                    class="btn-cancel-delete-operation text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md">Cancelar
+                </button>
+                <button type="button" id="btn-remove-operations"
+                    class="btn-confirm-delete-operation text-black bg-slate-100 hover:bg-slate-300 w-24 p-2 mt-5 rounded-md">Eliminar</button>
+            </div>
+        </div>
+    </section>
+
         <!-- Pantalla categorías-->
 
         <!--Add category-->
@@ -291,7 +307,7 @@
 
         <!--Remove Category-->
 
-        <section id="removeCategoryConfirmation" class="bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 hidden">
+        <section id="removeCategoryConfirmation" class="bg-white p-5 rounded-md m-1 lg:w-1/4 text-center border-solid border-2 border-gray-800 fixed  transform  -translate-y-[-5%] z-50 hidden">
             <div class="">
                 <p class="">¿Desea eliminar esta categoria? <span id="name"></span></p>
                 <div class="">
@@ -305,14 +321,14 @@
         </section>
     
 
-
+<!--  -->
     <!-- Pantalla reportes -->
     
     <section class="section-reports bg-white sm:w-3/4 p-5 mt-20 rounded-md m-3 hidden">
         <a name="reportes"></a>
         <div class=" ">
             <h2 class="text-[3rem] mb-[1rem]= ">Reportes</h2>
-            <div class="none-reports flex items-center flex-col">
+            <div class="none-reports flex items-center flex-col hidden">
                 <img src="./Images/presentation-stand.svg" class="lg:w-1/4 my-10">
                 <h3 class=" text-xl  text-center f">Operaciones insuficientes</h3>
                 <h4 class="text-center mb-[1rem]">Prueba agregando más operaciones</h4>
@@ -321,12 +337,12 @@
 
         
 <!--Tabla de reportes-->
-        <div class="has-reports flex flex-col hidden">
+        <div class="has-reports flex flex-col ">
             <div class=" m-10">
                 <h4 class="text-xl font-bold">Resumen</h4>
                 <ul class="reports-sumary"></ul>
             </div>
-            <div class=" m-10">
+            <div class="m-10">
                 <h4 class="text-xl font-bold">Totales por categoría</h4>
                 <div class="">
                     <table class="mt-5 w-full">
