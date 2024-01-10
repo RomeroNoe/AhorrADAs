@@ -96,15 +96,10 @@ const renderOperations = (operations) => {
     } else {
         showElement([".no-operations"])
         hideElement([".div-table-container"])
-    }
-    $(".form-select-category").innerHTML += `
-
-    `
+        
+}
 }
     
-
-
-
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -287,6 +282,7 @@ const updateData = (updatedCategories, updatedOperations) => {
 
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
 
+
 const saveOperation = () => {
     return{
         id: randomId(),
@@ -326,6 +322,8 @@ const deleteOperation = (operationId) => {
     window.location.reload()
 
 }
+
+
 
 // <!-- Operaciones -->
 
@@ -716,17 +714,86 @@ const initializeApp = () => {
     // Filters
 
     $(".form-select-tipo").addEventListener("input", (e) => {
-        const operationId = e.target.value
-        const currentData = getData("operations")
-        const filterOperations = currentData.filter(operation => operation.type === operationId)
-        renderOperations(filterOperations)
+        const selectedType = e.target.value;
+    
+        if (selectedType === "todos") {
+            
+            renderOperations(getData("operations"));
+        } else {
+            
+            const currentData = getData("operations");
+            const filterOperationType = currentData.filter(operations => operations.type === selectedType);
+            renderOperations(filterOperationType);
+        }
     })
 
     $(".form-select-category").addEventListener("input", (e) => {
-        const operationId = e.target.value
+        const selectedCategory = e.target.value
+        if (selectedCategory === "Todas") {
+            renderOperations(getData("operations"))
+        } else {
+            const currentData = getData("operations")
+            filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
+            renderOperations(filterOperationCategory)
+        }
+    })
+
+    $(".input-date").addEventListener("input", (e) => {
+        const selectedDate = new Date(e.target.value)
+        const currentDate = new Date()
+        
         const currentData = getData("operations")
-        const filterOperations = currentData.filter(operation => operation.category === operationId)
-        renderOperations(filterOperations)
+    
+        const filterOperationDate = currentData.filter(operation => {
+            const operationDate = new Date(operation.day)
+            return operationDate >= selectedDate && operationDate <= currentDate;
+        })
+    
+        renderOperations(filterOperationDate)
+    })
+
+    
+
+$(".form-select-order").addEventListener("input", (e) => {
+    const selectedOption = e.target.value;
+    const currentData = getData("operations");
+
+    // Sort operations based on the selected option
+    let sortedOperations;
+    switch (selectedOption) {
+        case "Mas reciente":
+            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
+            break;
+        case "Menos reciente":
+            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
+            break;
+        case "Mayo monto":
+            sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
+            break;
+        case "Menor monto":
+            sortedOperations = currentData.sort((a, b) => a.amount - b.amount);
+            break;
+        case "A-Z":
+            sortedOperations = currentData.sort((a, b) => a.description.localeCompare(b.description));
+            break;
+        case "Z-A":
+            sortedOperations = currentData.sort((a, b) => b.description.localeCompare(a.description));
+            break;
+        default:
+            sortedOperations = currentData;
+    }
+
+    // Render the sorted operations
+    renderOperations(sortedOperations);
+})
+
+    $(".remove-filters-btn").addEventListener("click", () => {
+        $(".form-select-category").value = "Todas";
+        $(".form-select-tipo").value = "todos";
+        $(".input-date").valueAsDate = new Date()
+        $(".section-filtros-ordenar").value = "Mas reciente"
+    
+        renderOperations(getData("operations"));
     })
 }
 
