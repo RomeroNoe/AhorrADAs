@@ -40,7 +40,7 @@ const defaultCategories = [
     { id: randomId(), name: "Educación" },
     { id: randomId(), name: "Transporte" },
     { id: randomId(), name: "Trabajo" }       
-]
+ ]
 
 console.log(defaultCategories)
 
