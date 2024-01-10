@@ -3,12 +3,14 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-//const randomId = () => self.crypto.randomUUID()
-const randomId = () => {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
-  };
+const randomId = () => self.crypto.randomUUID()
+// const randomId = () => {
+//     if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+//       return crypto.randomUUID();
+//     }
+//   };
+
+const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -21,7 +23,6 @@ const hideElement = (selectors) => {
         $(selector).classList.add('hidden')
     }
 }
-const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
 //const getData = (key) => JSON.parse(localStorage.getItem(key))
@@ -35,8 +36,6 @@ const getData = (key) => {
   };
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
-
-
 
 
 //Date ROMPE TODO DATE PORQUEEEE
@@ -96,13 +95,13 @@ const renderOperations = (operations) => {
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
-            <td class="sm:px-6">${operation.description}</td>
-            <td class="sm:px-6">${operation.category}</td>
-            <td class="sm:px-6">${operation.day}</td>
-            <td class="sm:px-6">${operation.amount}</td>
+            <td class="sm:pr-6">${operation.description}</td>
+            <td class="sm:pr-6 max-md:hidden">${operation.category}</td>
+            <td class="sm:pr-6 max-md:hidden">${operation.day}</td>
+            <td class="sm:pr-6">${operation.amount}</td>
             <td>
                 <button class="containerEditOperation-btn text-teal-500 hover:text-black" data-id onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="btn removeOperation-btn text-teal-500 hover:text-black" data-id onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button type="button" class="removeOperation-btn  text-teal-500 hover:text-black" data-id onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
@@ -371,6 +370,7 @@ const ejecutionDeleteBtn = (operationId, operationDescription) => {
 const deleteOperation = (operationId) => {
     const currentData = getData("operations").filter(operation => operation.id != operationId);
     setData("operations", currentData);
+    
     window.location.reload()
 
 }
@@ -476,8 +476,8 @@ const addNewCategory = () => {
     }
 }
 
-//Delete Category
-//btn-remove-categories ¿?
+// Delete Category
+// btn-remove-categories ¿?
 
 const deleteCategory = (categoryId) => {
     const categoryName = getCategoryNameById(categoryId)
@@ -752,10 +752,10 @@ const initializeApp = () => {
     // Categories
     // Add Category
 
-    $("#btn-add-categories").addEventListener("click", (e) => {
-        e.preventDefault()
-        addNewCategory()
-    })
+    // $("#btn-add-categories").addEventListener("click", (e) => {
+    //     e.preventDefault()
+    //     addNewCategory()
+    // })
 
     // Delete category
    
@@ -768,20 +768,21 @@ const initializeApp = () => {
     //     hideElement(["#removeCategoryConfirmation"])
     // })
 
-    $(".btn-confirm-delete").addEventListener("click", () => {
-        const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
-        if (categoryIdToDelete) {
-            deleteCategory(categoryIdToDelete)
-            hideElement(["#removeCategoryConfirmation"])
-            window.location.reload()
-        }
-    })
+    // $(".btn-confirm-delete").addEventListener("click", () => {
+    //     const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
+    //     if (categoryIdToDelete) {
+    //         deleteCategory(categoryIdToDelete)
+    //         hideElement(["#removeCategoryConfirmation"])
+    //         window.location.reload()
+    //     }
+    // })
     ;  // Check if this selects the correct button
-console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
-console.log($(".btn-confirm-delete"))
+// console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
+// console.log($(".btn-confirm-delete"))
 
     // Filters
 
+ 
     
     $(".form-select-tipo").addEventListener("input", (e) => {
         e.preventDefault()
@@ -832,7 +833,6 @@ $(".form-select-order").addEventListener("input", (e) => {
     const selectedOption = e.target.value;
     const currentData = getData("operations");
 
-    // Sort operations based on the selected option
     let sortedOperations;
     switch (selectedOption) {
         case "Mas reciente":
