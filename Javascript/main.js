@@ -72,8 +72,8 @@ const renderCategoriesTable = (categories) => {
     cleanContainer("#container-categories")
     for (const {id, name} of categories) {
         $("#container-categories").innerHTML += `
-            <div class="bg-white">
-                <p class="">${name}</p>
+            <div class="mb-6 flex justify-between items-center">
+                <p class="px-3 py-1 text-xs text-emerald-600 bg-emerald-50 rounded">${name}</p>
                 <div>
                     <span class="edit-btn" data-id="${id}">Editar</span>
                     <span class="delete-btn" data-id="${id}">Eliminar</span>
@@ -111,13 +111,14 @@ const renderOperations = (operations) => {
         
 }
 }
+// Render - Category
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
     for (const categorie of arrayCategorys) {
       just(
         "#container-categories"
-      ).innerHTML += `<li class="">
+      ).innerHTML += `<div class="">
       <p
           class=" ">
           ${categorie.category}</p>
@@ -361,9 +362,8 @@ const ejecutionDeleteBtn = (operationId, operationDescription) => {
     $("#btn-remove-operations").addEventListener("click", () => {
         const operationId = $("#btn-remove-operations").getAttribute("data-id")
         deleteOperation(operationId);
-        showOperations(getData("operations"));
-
-    });
+        showOperations(getData("operations"))
+    })
 }
 
 const deleteOperation = (operationId) => {
@@ -727,8 +727,12 @@ const initializeApp = () => {
     })
 
     // Delete Operation 
-    $(".removeOperation-btn").addEventListener("click", () => {
-        showElement(["#removeOperationConfirmation"])
+    const removeOperationButtons = document.querySelectorAll(".removeOperation-btn");
+
+    removeOperationButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showElement(["#removeOperationConfirmation"]);
+        });
     })
 
     $(".btn-cancel-delete-operation").addEventListener("click", () => {
