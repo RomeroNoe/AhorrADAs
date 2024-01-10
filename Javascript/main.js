@@ -23,7 +23,7 @@ const hideElement = (selectors) => {
     }
 }
 
-
+//
 /*LOCAL STORAGE */
 //const getData = (key) => JSON.parse(localStorage.getItem(key))
 
@@ -47,6 +47,10 @@ const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 // const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
 // $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
+
+
+
+
 
 /* RENDERS*/
 
@@ -84,7 +88,7 @@ const renderCategoriesTable = (categories) => {
     getIdButton($$(".delete-btn"), (id) => deleteCategory(id))
 }
 
-// Renders-Balance
+// Renders-Operation
 
 const renderOperations = (operations) => {
     cleanContainer(".tbody-info-render")
@@ -93,9 +97,9 @@ const renderOperations = (operations) => {
         showElement([".div-table-container"])
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
-        <tr>
+        <tr class="">
             <td class="sm:px-6">${operation.description}</td>
-            <td class="sm:px-6">${operation.category}</td>
+            <td class="sm:px-6 px-2 py-1 text-s text-emerald-600 bg-emerald-50 rounded">${operation.category}</td>
             <td class="sm:px-6">${operation.day}</td>
             <td class="sm:px-6">${operation.amount}</td>
             <td>
@@ -111,6 +115,8 @@ const renderOperations = (operations) => {
         
 }
 }
+
+// Render-Category
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -134,6 +140,9 @@ const renderCategory = (arrayCategorys) => {
       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
     }
   };
+
+
+// Render-Balance
 
   const renderBalance = () => {
     if(getData("operationsLS") === "[]"){
@@ -239,17 +248,17 @@ const updateBalance = (operations) => {
     $("#total-cost").innerText = `-$${Math.abs(totalExpense).toFixed(2)}`
     let sign = ""
     if (totalBalance > 0) {
-        $("#total").classList.add("text-green-600")
-        $("#total").classList.remove("text-red-600")
+        $("#total-amount").classList.add("text-green-600")
+        $("#total-amount").classList.remove("text-red-600")
         sign = '+'
     } else if (totalBalance < 0) {
-        $("#total").classList.add("text-red-600")
-        $("#total").classList.remove("text-green-600")
+        $("#total-amountt").classList.add("text-red-600")
+        $("#total-amount").classList.remove("text-green-600")
         sign = '-'
     } else {
-        $("#total").classList.remove("text-red-600", "text-green-600")
+        $("#total-amount").classList.remove("text-red-600", "text-green-600")
     }
-    $("#total").innerText = `${sign}$${Math.abs(totalBalance).toFixed(2)}`
+    $("#total-amount").innerText = `${sign}$${Math.abs(totalBalance).toFixed(2)}`
 }
 
 const updateCategories = (categorias) => {
@@ -283,7 +292,6 @@ const updateData = (updatedCategories, updatedOperations) => {
     updateCategories(updatedData.categories)
     updateBalance(updatedData.operations)
     renderOperationsTable(updatedData.operations)
-     //aca va la parte de los filtros
     updateReports()
 }
 
@@ -518,26 +526,6 @@ const editCategory = () => {
     renderCategoriesOptions(currentData)
     renderInputCategoriesOptions(currentData)
     $("#editCategoryButton").setAttribute("disabled" , true)
-}
-
-/*BALANCE*/
-
-const total = (operationType, operations) => {
-    return operations.filter(({type}) => operationType === type).reduce((acc, {amount}) => acc + amount, 0)
-}
-
-const resetBalance = () => {
-    $("#total-profit").innerHTML = `+$0`
-    $("#total-cost").innerHTML = `+$0`
-    $("#total").innerHTML = `$0`
-}
-
-const calculateBalance = (operations) => {
-    const totalIncome = total("Ganancia", operations)
-    const totalExpense = total("Gasto", operations)
-    const totalBalance = totalIncome - totalExpense
-
-    return { totalIncome, totalExpense, totalBalance }
 }
 
 //REPORTS
@@ -832,10 +820,10 @@ $(".form-select-order").addEventListener("input", (e) => {
     let sortedOperations;
     switch (selectedOption) {
         case "Mas reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
+            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
             break;
         case "Menos reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
+            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day)); //mas reciente y menos reciente estaban invertidos
             break;
         case "Mayo monto":
             sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
