@@ -359,10 +359,9 @@ const showOperations = (arrayOperations) => {
 // Delete operation
 
 const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-remove").setAttribute("data-id", operationId)
-    $(".description").innerText = `${operationDescription}`
-    $(".btn-remove").addEventListener("click", () => {
-        const operationId = $(".btn-remove").getAttribute("data-id")
+    $("#btn-remove-operations").setAttribute("data-id", operationId)
+    $("#btn-remove-operations").addEventListener("click", () => {
+        const operationId = $("#btn-remove-operations").getAttribute("data-id")
         deleteOperation(operationId);
         showOperations(getData("operations"));
 
@@ -749,6 +748,7 @@ const initializeApp = () => {
         }
     })
 
+
     // Categories
     // Add Category
 
@@ -782,32 +782,36 @@ console.log($(".btn-confirm-delete"))
 
     // Filters
 
+    
     $(".form-select-tipo").addEventListener("input", (e) => {
-        const selectedType = e.target.value;
+        e.preventDefault()
+        const selectedType = e.target.value
     
         if (selectedType === "todos") {
             
-            renderOperations(getData("operations"));
+            renderOperations(getData("operations"))
         } else {
             
-            const currentData = getData("operations");
-            const filterOperationType = currentData.filter(operations => operations.type === selectedType);
-            renderOperations(filterOperationType);
+            const currentData = getData("operations")
+            const filterOperationType = currentData.filter(operations => operations.type === selectedType)
+            renderOperations(filterOperationType)
         }
     })
 
     $(".form-select-category").addEventListener("input", (e) => {
+        e.preventDefault()
         const selectedCategory = e.target.value
         if (selectedCategory === "Todas") {
             renderOperations(getData("operations"))
         } else {
             const currentData = getData("operations")
-            filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
+            const filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
             renderOperations(filterOperationCategory)
         }
     })
 
     $(".input-date").addEventListener("input", (e) => {
+        e.preventDefault()
         const selectedDate = new Date(e.target.value)
         const currentDate = new Date()
         
@@ -824,6 +828,7 @@ console.log($(".btn-confirm-delete"))
     
 
 $(".form-select-order").addEventListener("input", (e) => {
+    e.preventDefault()
     const selectedOption = e.target.value;
     const currentData = getData("operations");
 
@@ -856,15 +861,31 @@ $(".form-select-order").addEventListener("input", (e) => {
     renderOperations(sortedOperations);
 })
 
+$(".hide-filters-btn").addEventListener("click", () => {
+            hideElement([".form-filtros"])
+            hideElement([".hide-filters-btn"])
+            showElement([".show-filters-btn"])
+            hideElement([".remove-filters-btn"])
+        })
+$(".show-filters-btn").addEventListener("click", () => {
+            showElement([".form-filtros"])
+            showElement([".hide-filters-btn"])
+            showElement([".remove-filters-btn"])
+            hideElement([".show-filters-btn"])
+        })
+        
+
+// Esto no hay en el tp pero podemos anadir 
     $(".remove-filters-btn").addEventListener("click", () => {
         $(".form-select-category").value = "Todas";
         $(".form-select-tipo").value = "todos";
         $(".input-date").valueAsDate = new Date()
-        $(".section-filtros-ordenar").value = "Mas reciente"
+        $(".form-select-order").value = "Mas reciente"
     
         renderOperations(getData("operations"));
     })
 }
+
 
 if (typeof window !== 'undefined') {
     // Verificar si el objeto window está definido
