@@ -73,9 +73,9 @@
 
 
     <!-- Balance/Filtros/Operaciones -->
-        <section class="section-filtros-balance-operaciones p-5 rounded-md flex">
-        <div class="size-full flex max-lg:flex-col">
-            <div class="column-balance md:w-2/3 max-lg:size-full">
+        <section class="section-filtros-balance-operaciones p-10 rounded-md flex w-full flex px-40 max-lg:px-10" >
+        <div class="size-full flex max-lg:flex-col max-lg:w-full">
+            <div class="column-balance">
 
                 <!-- Balance -->
                 <section class="section-balance bg-white p-5 rounded-md m-3 shadow-md">
@@ -96,8 +96,6 @@
                         </li>
                     </ul>
                 </section>
-
-        <!-- Filtros -->
             <section class="section-filtros bg-white p-5 rounded-md m-3 shadow-md">
                     <div class="flex flex-row items-center justify-between mb-4 md:mb-8">
                         <p class="title-filtros text-xl text-left font-bold">Filtros</p>
@@ -110,7 +108,7 @@
                         <ul class="form-filtros-ul">
                             <li class="section-filtros-tipo mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="form-select-tipo">Tipo</label>
-                                <select class="form-select-tipo p-2 border-slate-200 border-2 rounded-md">
+                                <select id="form-select-tipo" class="form-select-tipo p-2 border-slate-200 border-2 rounded-md">
                                     <option value="todos">Todos</option>
                                     <option value="gasto">Gasto</option>
                                     <option value="ganancia">Ganancia</option>
@@ -119,7 +117,7 @@
 
                             <li class="section-filtros-categoria mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="form-select-category">Categoria</label>
-                                <select class="form-select-category p-2 border-slate-200 border-2  rounded-md ">
+                                <select id="form-select-category" class="form-select-category p-2 border-slate-200 border-2  rounded-md ">
                                     <option>Todas</option>
                                     <option>Comida</option>
                                     <option>Servicios</option>
@@ -132,18 +130,18 @@
 
                             <li class="section-filtros-date mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="since-filter">Desde</label>
-                                <input type="date" class="input-date p-2 border-slate-200 border-2  rounded-md ">
+                                <input type="date" id="input-date" class="input-date p-2 border-slate-200 border-2  rounded-md ">
                             </li>
 
                             <li class="section-filtros-ordenar mb-2 md:mb-4 flex flex-col flex-col ">
-                                <label for="order">Ordenar por</label>
-                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md " id="order">
-                                    <option value="recent">Mas reciente</option>
-                                    <option value="older">Menos reciente</option>
-                                    <option value="max">Mayor monto</option>
-                                    <option value="min">Menor monto</option>
-                                    <option value="aZ">A-Z</option>
-                                    <option value="zA">Z-A</option>
+                                <label for="">Ordenar por</label>
+                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
+                                    <option>Mas reciente</option>
+                                    <option>Menos reciente</option>
+                                    <option>Mayor monto</option>
+                                    <option>Menor monto</option>
+                                    <option>A-Z</option>
+                                    <option>Z-A</option>
                                 </select>
                             </li>
 
@@ -155,12 +153,14 @@
                     </div>
                 </section>
             </div>
-
+<!-- section class="section-filtros-balance-operaciones p-10 rounded-md flex w-full flex px-40 max-lg:px-10">
+        <div class="size-full flex max-lg:flex-col max-lg:w-full"> -->
+        
         <!-- Operaciones -->
-            <section class="section-operaciones bg-white wp-5 rounded-md m-3 flex flex-col  shadow-md">
+            <section class="section-operaciones bg-white rounded-md m-3 flex flex-col shadow-md w-full">
                 <div class="flex flex-row items-center justify-between">
                     <p class="p-5 mb-10 title-section-operaciones text-xl text-left font-bold">Operaciones</p>
-                        <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 rounded-md p-3"
+                        <button class="button-nuevaOperacion text-white text-right bg-[#55d8ac] hover:bg-[#31C594] m-5 mb-10 max-md:m-1 rounded-md p-3"
                         id="btn-newOp">+ Nueva Operación</button>
                 </div>
                 <div class="no-operations mt-10 flex items-center flex-col hidden">
@@ -172,19 +172,19 @@
                 </div>
 
                  <!-- Tabla de Operaciones renderizada -->
-                <div class="div-table-container mt-5 px-6">
-                    <table class="table-operationsRender">
+                <div class="div-table-container mt-5 px-6 flex">
+                    <table class="table-operationsRender w-full ">
                         <thead>
-                            <tr class=""> 
-                                <th class="description ">Descripcion</th>
-                                <th class="">Categoria</th>
-                                <th class="">Fecha</th> 
+                            <tr class="text-left"> 
+                                <th class="description">Descripcion</th>
+                                <th class="max-md:hidden">Categoria</th>
+                                <th class="max-md:hidden">Fecha</th> 
                                 <th class="">Monto</th>
                                 <th class="">Acciones</th>
                             </tr>
                         </thead>
     
-                        <tbody class="tbody-info-render"></tbody>
+                        <tbody class="tbody-info-render text-left"></tbody>
                     </table>
                 </div>
 
@@ -273,7 +273,6 @@
 
                             <input name="input-add" id="input-add" type="text"
                                 class="w-[85%] p-[0.5rem] rounded-[0.3rem] border-inherit border-[0.1rem] hover:border-gray-400">
-
                                 <p class="text-red-600 hidden" id="errorNewCategory">Este campo es obligatorio</p>
 
                             <button type="button" id="btn-add-categories"
