@@ -23,25 +23,54 @@ const getData = (key) => JSON.parse(localStorage.getItem(key))
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 
-//Date
 
-// const setDate = () => {
-//     const dateInputs = $$("input[type='date']")
-//     for (const date of dateInputs) {
-//         date.valueAsDate = new Date()
-//     }
-// }
+
+//Date ROMPE TODO DATE PORQUEEEE
 
 // const today = new Date()
-// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-// $("#op-input-date").valueAsDate = date  //Label fecha / Nueva Operación
 
+// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+// $("#op-input-date").valueAsDate = date
+// console.log(date)
 
 // const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
 // $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
-
 /* RENDERS*/
+
+//Renders-Categories
+
+const renderCategoriesOptions = (categories) => {
+    cleanContainer("#form-select-category")
+    cleanContainer("#select-category")
+    $("#form-select-category").innerHTML = `<option value="">Todas</option>`
+    for (const {id, name} of categories) {
+        $("#form-select-category").innerHTML += `
+            <option value="${id}">${name}</option>
+        `
+        $("#select-category").innerHTML += `
+            <option value="${id}">${name}</option>
+        `
+    }
+}
+
+//Necesita TAILWIND
+
+const renderCategoriesTable = (categories) => {
+    cleanContainer("#container-categories")
+    for (const {id, name} of categories) {
+        $("#container-categories").innerHTML += `
+            <div class="">
+                <p class="">${name}</p>
+                <div>
+                    <span class="edit-btn" data-id="${id}">Editar</span>
+                    <span class="delete-btn" data-id="${id}">Eliminar</span>
+                </div>
+            </div>`
+    }
+    getIdButton($$(".edit-btn"), (id) => showEditCategory(id))
+    getIdButton($$(".delete-btn"), (id) => deleteCategory(id))
+}
 
 // Renders-Balance
 
@@ -105,7 +134,7 @@ const renderCategory = (arrayCategorys) => {
         resetBalance()
     }
     else {
-        updatedBalance()
+        updateBalance()
     }
 }
 
@@ -195,7 +224,67 @@ const renderTotalMonths = () => {
     }
 }
 
+//UpdateData
+
+const updateBalance = (operations) => {
+    const { totalIncome, totalExpense, totalBalance } = calculateBalance(operations)
+    $("#total-profit").innerText = `+$${Math.abs(totalIncome).toFixed(2)}`
+    $("#total-cost").innerText = `-$${Math.abs(totalExpense).toFixed(2)}`
+    let sign = ""
+    if (totalBalance > 0) {
+        $("#total").classList.add("text-green-600")
+        $("#total").classList.remove("text-red-600")
+        sign = '+'
+    } else if (totalBalance < 0) {
+        $("#total").classList.add("text-red-600")
+        $("#total").classList.remove("text-green-600")
+        sign = '-'
+    } else {
+        $("#total").classList.remove("text-red-600", "text-green-600")
+    }
+    $("#total").innerText = `${sign}$${Math.abs(totalBalance).toFixed(2)}`
+}
+
+const updateCategories = (categorias) => {
+    renderCategoriesTable(categorias)
+    renderCategoriesOptions(categorias)
+}
+
+const updateReports = () => {
+    const operations = getOperations()
+    const hasIncome = operations.some(({type}) => type === 'Ganancia')
+    const hasExpense = operations.some(({type}) => type === 'Gasto')
+
+    if (hasIncome && hasExpense) {
+        showElement([".has-reports"])
+        hideElement([".none-reports"])
+        operation()
+        renderTotalCategories()
+        renderTotalMonths()
+    } else {
+        showElement([".none-reports"])
+        hideElement([".has-reports"])
+    }
+}
+
+const updateData = (updatedCategories, updatedOperations) => {
+    const updatedData = { 
+        categories: updatedCategories || getCategories(), 
+        operations :updatedOperations || getOperations()
+    }
+    setData("data", updatedData)
+    updateCategories(updatedData.categories)
+    updateBalance(updatedData.operations)
+    renderOperationsTable(updatedData.operations)
+     //aca va la parte de los filtros
+    updateReports()
+}
+
+//const categoriesData = getData("defaultCategories") //localStorage is not defined ERROR
+
 // /* Data handlers */ - (Save and delete data)
+
+
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
 
 
@@ -223,10 +312,10 @@ const saveCategory = () => {
 // Delete operation
 
 const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-confirm-delete-operation").setAttribute("data-id", operationId)
+    $(".btn-remove").setAttribute("data-id", operationId)
     $(".description").innerText = `${operationDescription}`
-    $(".btn-confirm-delete-operation").addEventListener("click", () => {
-        const operationId = $(".btn-confirm-delete-operation").getAttribute("data-id")
+    $(".btn-remove").addEventListener("click", () => {
+        const operationId = $(".btn-remove").getAttribute("data-id")
         deleteOperation(operationId);
         showOperations(getData("operations"));
 
@@ -278,6 +367,28 @@ const showOperations = (arrayOperations) => {
   }
 }
 
+
+// Delete operation
+
+const ejecutionDeleteBtn = (operationId, operationDescription) => {
+    $(".btn-remove").setAttribute("data-id", operationId)
+    $(".description").innerText = `${operationDescription}`
+    $(".btn-remove").addEventListener("click", () => {
+        const operationId = $(".btn-remove").getAttribute("data-id")
+        deleteOperation(operationId);
+        showOperations(getData("operations"));
+
+    });
+}
+
+const deleteOperation = (operationId) => {
+    const currentData = getData("operations").filter(operation => operation.id != operationId);
+    setData("operations", currentData);
+    window.location.reload()
+
+}
+
+
 // Edit Form
 
 const editForm = (operationId) => {
@@ -291,6 +402,13 @@ const editForm = (operationId) => {
     $("#input-amount").value = operationEdit.amount
     $("#select-type").value = operationEdit.type
 
+}
+
+const clearOperationForm = () => {
+    $("#input-description-text").value = ""
+    $("#input-amount").value = "0"
+    $("#select-type").value = "Gasto"
+    $("#op-input-date").valueAsDate = date
 }
 
 //Categories
@@ -384,23 +502,8 @@ const editCategory = () => {
 
 /*BALANCE*/
 
-const balanceCostProfit = (array, tipo) => {
-
-    const filterOperation = array.filter((arr) => {
-        return arr.tipo === tipo && arr
-    })
-    const spent = filterOperation.reduce((acc, arr) => {
-        return acc + Number(arr.monto)
-    }, 0)
-    return spent
-}
-// Irena: Lo comente porque estaba rompiendo la funcion de los botones
-// const totalBalance = balanceCostProfit(operations, "revenue") - balanceCostProfit(operations, "spent")
-
-const updatedBalance = () => {
-    $("#total-profit").innerHTML = `+$${balanceCostProfit(operations, "revenue")}`
-    $("#total-cost").innerHTML = `+$${balanceCostProfit(operations, "spent")}`
-    $("#total").innerHTML = `$${totalBalance}`
+const total = (transactionType, transactions) => {
+    return transactions.filter(({type}) => transactionType === type).reduce((acc, {amount}) => acc + amount, 0)
 }
 
 const resetBalance = () => {
@@ -408,19 +511,10 @@ const resetBalance = () => {
     $("#total-cost").innerHTML = `+$0`
     $("#total").innerHTML = `$0`
 }
-// He movido esto a los RENDERS 
-// const renderBalance = () => {
-//     if(getData("operationsLS") === "[]"){
-//         resetBalance()
-//     }
-//     else {
-//         updatedBalance()
-//     }
-// }
 
-const calculateBalance = (transactions) => {
-    const totalIncome = total("Ganancia", transactions)
-    const totalExpense = total("Gasto", transactions)
+const calculateBalance = (operations) => {
+    const totalIncome = total("Ganancia", operations)
+    const totalExpense = total("Gasto", operations)
     const totalBalance = totalIncome - totalExpense
 
     return { totalIncome, totalExpense, totalBalance }
@@ -430,9 +524,9 @@ const calculateBalance = (transactions) => {
 
 // Total de ganancias, gastos y balance por mes
 const totalAmountByMonth = () => {
-    return getTransactions().reduce((acc, transaction) => {
-        const { day, amount, type } = transaction
-        const transactionAmount = type === 'Ganancia' ? amount : -amount
+    return getoperations().reduce((acc, operation) => {
+        const { day, amount, type } = operation
+        const operationAmount = type === 'Ganancia' ? amount : -amount
         const year = new Date(day).getFullYear()
         const month = new Date(day).getMonth()
 
@@ -451,16 +545,16 @@ const totalAmountByMonth = () => {
         } else {
             acc[year][month].totalExpense += amount
         }
-        acc[year][month].totalBalance += transactionAmount
+        acc[year][month].totalBalance += operationAmount
         return acc
     }, {})
 }
 
 // Categoría con mayor valor
 const totalAmountByCategory = () => {
-    return getTransactions().reduce((acc, transaction) => {
-        const { category, amount, type } = transaction
-        const transactionAmount = type === 'Ganancia' ? amount : -amount
+    return getoperations().reduce((acc, operation) => {
+        const { category, amount, type } = operation
+        const operationAmount = type === 'Ganancia' ? amount : -amount
 
         if (!acc[category]) {
             acc[category] = {
@@ -474,7 +568,7 @@ const totalAmountByCategory = () => {
         } else {
             acc[category].totalExpense += amount
         }
-        acc[category].totalBalance += transactionAmount
+        acc[category].totalBalance += operationAmount
         return acc
     }, {})
 }
@@ -496,116 +590,6 @@ const monthWithMaxValue = (property) => {
         }
     }
     return { maxMonth, maxAmount }
-}
-
-// //Me habia olvidado de agregar estas funciónes, a las que llamo abajo. Hay que ponerle TAILWIND es lo que se imprime en el resumen (summary) en la tabla de reportes.
-
-// He movido esto a los RENDERS:
-
-// const renderCategorySummary = (title, categoryType, amount) => {
-//     const { categoryName, maxAmount } = categoryWithMaxValue(categoryType)
-//     $(".reports-summary").innerHTML += `
-//         <li class="">
-//             <p class="">${title}</p>
-//             <div class="">
-//                 <span class="">${categoryName}</span>
-//                 <span class=" ${amount < 0 ? 'text-red-600' : amount > 0 ? 'text-green-600' : ''}">${amount > 0 ? '+' : amount < 0 ? '-' : ''}$${Math.abs(maxAmount).toFixed(2)}</span>
-//             </div>
-//         </li>`
-// }
-
-
-// const renderMonthSummary = (title, property, amount) => {
-//     const { maxMonth, maxAmount } = monthWithMaxValue(property)
-//     $(".reports-summary").innerHTML += `
-//         <li class="">
-//             <p class="">${title}</p>
-//             <div class="">
-//                 <span>${getMonthWithYear(maxMonth.month, maxMonth.year)}</span>
-//                 <span class="${amount < 0 ? 'text-red-600' : 'text-green-600'}">${amount > 0 ? '+' : '-'}$${Math.abs(maxAmount).toFixed(2)}</span>
-//             </div>
-//         </li>`
-// }
-
-// // Categoría -> mayor ganancia
-// const renderCategoryWithMaxIncome = () => renderCategorySummary("Categoría con mayor ganancia", "totalIncome", 1)
-
-// // Categoría -> mayor gasto
-// const renderCategoryWithMaxExpense = () => renderCategorySummary("Categoría con mayor gasto", "totalExpense", -1)
-
-// // Categoría -> mayor balance
-// const renderCategoryWithMaxBalance = () => renderCategorySummary("Categoría con mayor balance", "totalBalance", 0)
-
-// // Mes -> mayor ganancia
-// const renderMonthWithMaxIncome = () => renderMonthSummary("Mes con mayor ganancia", "totalIncome", 1)
-
-// // Mes -> mayor gasto
-// const renderMonthWithMaxExpense = () => renderMonthSummary("Mes con mayor gasto", "totalExpense", -1)
-
-
-
-// // Carga por categorías NECESITA TAILWIND
-// const renderTotalCategories = () => {
-//     const totalsByCategory = totalAmountByCategory()
-//     cleanContainer(".reports-categories")
-//     for (const category in totalsByCategory) {
-//         const { totalIncome, totalExpense, totalBalance } = totalsByCategory[category]
-//         $(".reports-categories").innerHTML += `
-//             <tr>
-//                 <td class="">${getCategoryNameById(category)}</td>
-//                 <td class="">+$${totalIncome.toFixed(2)}</td>
-//                 <td class="">-$${totalExpense.toFixed(2)}</td>
-//                 <td class="">$${totalBalance.toFixed(2)}</td>
-//             </tr>`
-//     }
-// }
-
-// //Recargar Resumen
-// const renderSummary = () => {
-//     cleanContainer(".reports-summary")
-//     renderCategoryWithMaxIncome()
-//     renderCategoryWithMaxExpense()
-//     renderCategoryWithMaxBalance()
-//     renderMonthWithMaxIncome()
-//     renderMonthWithMaxExpense()
-// }
-
-
-// // Carga por mes NECESITA TAILWIND
-// const renderTotalMonths = () => {
-//     const totalsByMonth = totalAmountByMonth()
-//     cleanContainer(".reports-months")
-//     for (const year in totalsByMonth) {
-//         for (const month in totalsByMonth[year]) {
-//             const { totalIncome, totalExpense, totalBalance } = totalsByMonth[year][month]
-//             $(".reports-months").innerHTML += `
-//                 <tr>
-//                     <td class="">${getMonthWithYear(month, year)}</td>
-//                     <td class="">+$${totalIncome.toFixed(2)}</td>
-//                     <td class="">-$${totalExpense.toFixed(2)}</td>
-//                     <td class="">$${totalBalance.toFixed(2)}</td>
-//                 </tr>`
-//         }
-//     }
-// }
-
-// Actualiza reportes
-
-const updateReports = () => {
-    const transactions = getTransactions()
-    const hasIncome = transactions.some(({type}) => type === 'Ganancia')
-    const hasExpense = transactions.some(({type}) => type === 'Gasto')
-
-    if (hasIncome && hasExpense) {
-        showElement([".has-reports"])
-        hideElement([".none-reports"])
-        renderSummary()
-        renderTotalCategories()
-        renderTotalMonths()
-    } else {
-        showElement([".none-reports"])
-        hideElement([".has-reports"])
-    }
 }
 
 

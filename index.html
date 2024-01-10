@@ -82,19 +82,23 @@
                     <a name="balance"></a>
                     <p class="title-balance text-xl font-bold mb-10">Balance</p>
                     <ul class="balance-ul">
+
                         <li class="section-balance-ganancias flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Ganancias</p>
-                            <p class="text-lime-500" id="total-profit"></p>
+                            <p class="text-lime-500" id="total-profit">+$0.00</p>
                         </li>
+
                         <li class="section-balance-gastos flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Gastos</p>
-                            <p class="text-red-600" id="total-cost"></p>
+                            <p class="text-red-600" id="total-cost">-$0.00</p>
                         </li>
+
                         <li class="section-balance-total flex flex-row items-center justify-between mb-2 md:mb-4">
                             <p>Total</p>
-                            <p class="" id="total"></p>
+                            <p class="" id="total">$0.00</p>
                         </li>
                     </ul>
+
                 </section>
 
         <!-- Filtros -->
@@ -221,7 +225,7 @@
                 </select>
 
                 <label for="op-input-date" class="font-bold">Fecha</label>
-                <input type="date" id="op-input-date" class="p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md hover:border-gray-400" name="date" placeholder="Fecha"
+                <input type="date" id="op-input-date" class="op-input-date p-2 border-2 border-slate-300 mb-4 md:mb-4 rounded-md hover:border-gray-400" name="date" placeholder="Fecha"
                     required>
             </form>
             <div class="w-full flex justify-end">
@@ -354,7 +358,7 @@
                                 <th class="">Balance</th>
                             </tr>
                         </thead>
-                        <tbody class=""></tbody>
+                        <tbody class="reports-categories"></tbody>
                     </table>
                 </div>  
             </div>
