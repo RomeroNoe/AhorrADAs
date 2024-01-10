@@ -3,12 +3,9 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-//const randomId = () => self.crypto.randomUUID()
-const randomId = () => {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
-  };
+
+const randomId = () => self.crypto.randomUUID() //self is not defined, pero funciona
+
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -21,6 +18,7 @@ const hideElement = (selectors) => {
         $(selector).classList.add('hidden')
     }
 }
+const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
 const getData = (key) => JSON.parse(localStorage.getItem(key))
@@ -35,7 +33,6 @@ const getData = (key) => JSON.parse(localStorage.getItem(key))
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
-<<<<<<< HEAD
 const defaultCategories = [
     { id: randomId(), name: "Comida" },
     { id: randomId(), name: "Servicios" },
@@ -43,10 +40,9 @@ const defaultCategories = [
     { id: randomId(), name: "Educación" },
     { id: randomId(), name: "Transporte" },
     { id: randomId(), name: "Trabajo" }       
- ]
-=======
->>>>>>> 5637199dbcf58f30ac65fce88da8cced38fefe7f
+]
 
+console.log(defaultCategories)
 
 const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
@@ -105,13 +101,13 @@ const renderOperations = (operations) => {
     for (const operation of operations) {
         $(".tbody-info-render").innerHTML += `
         <tr>
-            <td class="sm:pr-6">${operation.description}</td>
-            <td class="sm:pr-6 max-md:hidden">${operation.category}</td>
-            <td class="sm:pr-6 max-md:hidden">${operation.day}</td>
-            <td class="sm:pr-6">${operation.amount}</td>
+            <td class="sm:px-6">${operation.description}</td>
+            <td class="sm:px-6">${operation.category}</td>
+            <td class="sm:px-6">${operation.day}</td>
+            <td class="sm:px-6">${operation.amount}</td>
             <td>
                 <button class="containerEditOperation-btn text-teal-500 hover:text-black" data-id onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="removeOperation-btn  text-teal-500 hover:text-black" data-id onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button type="button" class="btn removeOperation-btn text-teal-500 hover:text-black" data-id onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
@@ -399,7 +395,6 @@ const ejecutionDeleteBtn = (operationId, operationDescription) => {
 const deleteOperation = (operationId) => {
     const currentData = getData("operations").filter(operation => operation.id != operationId);
     setData("operations", currentData);
-    
     window.location.reload()
 
 }
@@ -491,8 +486,8 @@ const addNewCategory = () => {
     }
 }
 
-// Delete Category
-// btn-remove-categories ¿?
+//Delete Category
+//btn-remove-categories ¿?
 
 const deleteCategory = (categoryId) => {
     const categoryName = getCategoryNameById(categoryId)
@@ -767,10 +762,10 @@ const initializeApp = () => {
     // Categories
     // Add Category
 
-    // $("#btn-add-categories").addEventListener("click", (e) => {
-    //     e.preventDefault()
-    //     addNewCategory()
-    // })
+    $("#btn-add-categories").addEventListener("click", (e) => {
+        e.preventDefault()
+        addNewCategory()
+    })
 
     // Delete category
    
@@ -783,21 +778,21 @@ const initializeApp = () => {
     //     hideElement(["#removeCategoryConfirmation"])
     // })
 
-    // $(".btn-confirm-delete").addEventListener("click", () => {
-    //     const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
-    //     if (categoryIdToDelete) {
-    //         deleteCategory(categoryIdToDelete)
-    //         hideElement(["#removeCategoryConfirmation"])
-    //         window.location.reload()
-    //     }
-    // })
+    $(".btn-confirm-delete").addEventListener("click", () => {
+        const categoryIdToDelete = $(".btn-confirm-delete").getAttribute("data-category-id");
+        if (categoryIdToDelete) {
+            deleteCategory(categoryIdToDelete)
+            hideElement(["#removeCategoryConfirmation"])
+            window.location.reload()
+        }
+    })
     ;  // Check if this selects the correct button
-// console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
-// console.log($(".btn-confirm-delete"))
+console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
+console.log($(".btn-confirm-delete"))
 
-    // Filters
+// Filters
 
-    
+    //Filtro por Tipo
     $(".form-select-tipo").addEventListener("input", (e) => {
         const operationId = e.target.value
         const currentData = getData("operations")
@@ -812,83 +807,7 @@ const initializeApp = () => {
         const filterOperations = currentData.filter(operation => operation.category === operationId)
         renderOperations(filterOperations)
     })
-
-    $(".input-date").addEventListener("input", (e) => {
-        e.preventDefault()
-        const selectedDate = new Date(e.target.value)
-        const currentDate = new Date()
-        
-        const currentData = getData("operations")
-    
-        const filterOperationDate = currentData.filter(operation => {
-            const operationDate = new Date(operation.day)
-            return operationDate >= selectedDate && operationDate <= currentDate;
-        })
-    
-        renderOperations(filterOperationDate)
-    })
-
-    
-
-$(".form-select-order").addEventListener("input", (e) => {
-    e.preventDefault()
-    const selectedOption = e.target.value;
-    const currentData = getData("operations");
-
-    // Sort operations based on the selected option
-    let sortedOperations;
-    switch (selectedOption) {
-        case "Mas reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
-            break;
-        case "Menos reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
-            break;
-        case "Mayo monto":
-            sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
-            break;
-        case "Menor monto":
-            sortedOperations = currentData.sort((a, b) => a.amount - b.amount);
-            break;
-        case "A-Z":
-            sortedOperations = currentData.sort((a, b) => a.description.localeCompare(b.description));
-            break;
-        case "Z-A":
-            sortedOperations = currentData.sort((a, b) => b.description.localeCompare(a.description));
-            break;
-        default:
-            sortedOperations = currentData;
-    }
-
-    // Render the sorted operations
-    renderOperations(sortedOperations);
-})
-
-$(".hide-filters-btn").addEventListener("click", () => {
-            hideElement([".form-filtros"])
-            hideElement([".hide-filters-btn"])
-            showElement([".show-filters-btn"])
-            hideElement([".remove-filters-btn"])
-        })
-$(".show-filters-btn").addEventListener("click", () => {
-            showElement([".form-filtros"])
-            showElement([".hide-filters-btn"])
-            showElement([".remove-filters-btn"])
-            hideElement([".show-filters-btn"])
-        })
-        
-
-// Esto no hay en el tp pero podemos anadir 
-    $(".remove-filters-btn").addEventListener("click", () => {
-        $(".form-select-category").value = "Todas";
-        $(".form-select-tipo").value = "todos";
-        $(".input-date").valueAsDate = new Date()
-        $(".form-select-order").value = "Mas reciente"
-    
-        renderOperations(getData("operations"));
-    })
 }
-
 
 if (typeof window !== 'undefined') {
     // Verificar si el objeto window está definido
