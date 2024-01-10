@@ -101,7 +101,7 @@
             <section class="section-filtros bg-white p-5 rounded-md m-3 shadow-md">
                     <div class="flex flex-row items-center justify-between mb-4 md:mb-8">
                         <p class="title-filtros text-xl text-left font-bold">Filtros</p>
-                        <button class="text-sm font-medium text-right">Ocultar Filtros</button>
+                        <button class="remove-filters-btn text-sm font-medium text-right">Ocultar Filtros</button>
                     </div>
 
                     <form>
@@ -110,9 +110,9 @@
                             <li class="section-filtros-tipo mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="form-select-tipo">Tipo</label>
                                 <select class="form-select-tipo p-2 border-slate-200 border-2 rounded-md">
-                                    <option>Todos</option>
-                                    <option>Gasto</option>
-                                    <option>Ganancia</option>
+                                    <option value="todos">Todos</option>
+                                    <option value="gasto">Gasto</option>
+                                    <option value="ganancia">Ganancia</option>
                                 </select>
                             </li>
 
@@ -136,7 +136,7 @@
 
                             <li class="section-filtros-ordenar mb-2 md:mb-4 flex flex-col flex-col ">
                                 <label for="">Ordenar por</label>
-                                <select class="p-2 border-slate-200 border-2  rounded-md ">
+                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
                                     <option>Mas reciente</option>
                                     <option>Menos reciente</option>
                                     <option>Mayo monto</option>
