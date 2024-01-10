@@ -3,19 +3,8 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-const randomId = () => self.crypto.randomUUID()
-console.log(randomId)
 
-// const randomId = () => self.crypto.randomUUID() //self is not defined
-// console.log(randomId)
-
-// const randomId = () => {
-// if (typeof self !== 'undefined') {
-//     // Verificar si el objeto self está definido
-//     self.crypto.randomUUID();
-//   } 
-// }
-// console.log(randomId)
+const randomId = () => self.crypto.randomUUID() //self is not defined, pero funciona
 
 
 const showElement = (selectors) => {
@@ -32,15 +21,15 @@ const hideElement = (selectors) => {
 const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
-//const getData = (key) => JSON.parse(localStorage.getItem(key))
+const getData = (key) => JSON.parse(localStorage.getItem(key))
 
-const getData = (key) => {
-    if (typeof localStorage !== 'undefined') {
-      // Verificar si localStorage está definido
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
-    } 
-  };
+// const getData = (key) => {
+//     if (typeof localStorage !== 'undefined') {
+//       // Verificar si localStorage está definido
+//       const item = localStorage.getItem(key);
+//       return item ? JSON.parse(item) : null;
+//     } 
+//   };
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
@@ -54,21 +43,17 @@ const defaultCategories = [
 ]
 
 console.log(defaultCategories)
+
 const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
 
 
 
-//Date ROMPE TODO DATE PORQUEEEE
+//Date 
 
-// const today = new Date()
+const today = new Date()
+const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
-// const date = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-// $("#op-input-date").valueAsDate = date
-// console.log(date)
-
-// const firstDayOfTheMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-// $("#since-filter").valueAsDate = firstDayOfTheMonth  //Label Desde / Filtros, es para que aparezca el dia actual cuando se abre el almanaque
 
 /* RENDERS*/
 
@@ -94,10 +79,10 @@ const renderCategoriesTable = (categories) => {
     cleanContainer("#container-categories")
     for (const {id, name} of categories) {
         $("#container-categories").innerHTML += `
-            <div class="">
-                <p class="">${name}</p>
+            <div class="mb-6">
+                <p class="px-3">${name}</p>
                 <div>
-                    <span class="edit-btn" data-id="${id}">Editar</span>
+                    <span class="edit-btn mr-4" data-id="${id}">Editar</span>
                     <span class="delete-btn" data-id="${id}">Eliminar</span>
                 </div>
             </div>`
