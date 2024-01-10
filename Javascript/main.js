@@ -3,12 +3,20 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-//const randomId = () => self.crypto.randomUUID()
-const randomId = () => {
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID();
-    }
-  };
+const randomId = () => self.crypto.randomUUID()
+console.log(randomId)
+
+// const randomId = () => self.crypto.randomUUID() //self is not defined
+// console.log(randomId)
+
+// const randomId = () => {
+// if (typeof self !== 'undefined') {
+//     // Verificar si el objeto self está definido
+//     self.crypto.randomUUID();
+//   } 
+// }
+// console.log(randomId)
+
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -36,6 +44,18 @@ const getData = (key) => {
 
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
+const defaultCategories = [
+    { id: randomId(), name: "Comida" },
+    { id: randomId(), name: "Servicios" },
+    { id: randomId(), name: "Salidas" },
+    { id: randomId(), name: "Educación" },
+    { id: randomId(), name: "Transporte" },
+    { id: randomId(), name: "Trabajo" }       
+]
+
+console.log(defaultCategories)
+const allCategories = getData("categories") || defaultCategories
+const allOperations = getData("operations") || []
 
 
 
@@ -116,28 +136,45 @@ const renderOperations = (operations) => {
     `
 }
 
-const renderCategory = (arrayCategorys) => {
-    clear("#container-categories");
-    for (const categorie of arrayCategorys) {
-      just(
-        "#container-categories"
-      ).innerHTML += `<li class="">
-      <p
-          class=" ">
-          ${categorie.category}</p>
-      <div class="">
-          <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
-          <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
-      </div> `;
-  
-      just(
-        "#form-select-category"
-      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
-      just(
-        "#select-category"
-      ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+
+const renderCategory = (categories) => {
+    cleanContainer("#container-categories")
+    for (const {id, name} of categories) {
+        $("#container-categories").innerHTML += `
+            <div class="mb-6 flex justify-between items-center">
+                <p class="px-3 py-1 text-xs bg-emerald-50 rounded">${name}</p>
+                <div>
+                    <span class="edit-btn mr-4 text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Editar</span>
+                    <span class="delete-btn text-xs cursor-pointer hover:text-zinc-600" data-id="${id}">Eliminar</span>
+                </div>
+            </div>`
     }
-  };
+    getIdButton($$(".edit-btn"), (id) => showEditCategory(id))
+    getIdButton($$(".delete-btn"), (id) => deleteCategory(id))
+}
+
+// const renderCategory = (arrayCategorys) => {
+//     clear("#container-categories");
+//     for (const categorie of arrayCategorys) {
+//       just(
+//         "#container-categories"
+//       ).innerHTML += `<li class="">
+//       <p
+//           class=" ">
+//           ${categorie.category}</p>
+//       <div class="">
+//           <button class="edit" onclick="editCategory('${categorie.id}')" >Editar</button>
+//           <button  class="btn-remove-categories" onclick="viewChangeRemove('${categorie.id}'  , '${categorie.category}')">Eliminar</button>
+//       </div> `;
+  
+//       just(
+//         "#form-select-category"
+//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+//       just(
+//         "#select-category"
+//       ).innerHTML += `<option value="${categorie.id}">${categorie.category}</option>`;
+//     }
+//   };
 
   const renderBalance = () => {
     if(getData("operationsLS") === "[]"){
@@ -319,10 +356,6 @@ const saveCategory = () => {
 }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b82def2063005b86a6f0a95e6f8c95783a7c546b
 // <!-- Operaciones -->
 
 /* Add new operation */
@@ -442,20 +475,6 @@ const handleEditOperation = () => {
 }
 
 //Categories
-
-//Obtener categoría por ID
-
-const defaultCategories = [
-            { id: randomId(), name: "Comida" },
-            { id: randomId(), name: "Servicios" },
-            { id: randomId(), name: "Salidas" },
-            { id: randomId(), name: "Educación" },
-            { id: randomId(), name: "Transporte" },
-            { id: randomId(), name: "Trabajo" }       
-]
-
-const allCategories = getData("categories") || defaultCategories
-const allOperations = getData("operations") || []
 
 
 //Obtener categoría por ID
@@ -786,126 +805,24 @@ const initializeApp = () => {
 console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
 console.log($(".btn-confirm-delete"))
 
-    // Filters
+// Filters
 
-    
+    //Filtro por Tipo
     $(".form-select-tipo").addEventListener("input", (e) => {
-<<<<<<< HEAD
         const operationId = e.target.value
         const currentData = getData("operations")
         const filterOperations = currentData.filter(operation => operation.type === operationId)
         renderOperations(filterOperations)
     })
 
+    //Filtro por categoría
     $(".form-select-category").addEventListener("input", (e) => {
         const operationId = e.target.value
         const currentData = getData("operations")
         const filterOperations = currentData.filter(operation => operation.category === operationId)
         renderOperations(filterOperations)
-=======
-        e.preventDefault()
-        const selectedType = e.target.value
-    
-        if (selectedType === "todos") {
-            
-            renderOperations(getData("operations"))
-        } else {
-            
-            const currentData = getData("operations")
-            const filterOperationType = currentData.filter(operations => operations.type === selectedType)
-            renderOperations(filterOperationType)
-        }
-    })
-
-    $(".form-select-category").addEventListener("input", (e) => {
-        e.preventDefault()
-        const selectedCategory = e.target.value
-        if (selectedCategory === "Todas") {
-            renderOperations(getData("operations"))
-        } else {
-            const currentData = getData("operations")
-            const filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
-            renderOperations(filterOperationCategory)
-        }
-    })
-
-    $(".input-date").addEventListener("input", (e) => {
-        e.preventDefault()
-        const selectedDate = new Date(e.target.value)
-        const currentDate = new Date()
-        
-        const currentData = getData("operations")
-    
-        const filterOperationDate = currentData.filter(operation => {
-            const operationDate = new Date(operation.day)
-            return operationDate >= selectedDate && operationDate <= currentDate;
-        })
-    
-        renderOperations(filterOperationDate)
-    })
-
-    
-
-$(".form-select-order").addEventListener("input", (e) => {
-    e.preventDefault()
-    const selectedOption = e.target.value;
-    const currentData = getData("operations");
-
-    // Sort operations based on the selected option
-    let sortedOperations;
-    switch (selectedOption) {
-        case "Mas reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
-            break;
-        case "Menos reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
-            break;
-        case "Mayo monto":
-            sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
-            break;
-        case "Menor monto":
-            sortedOperations = currentData.sort((a, b) => a.amount - b.amount);
-            break;
-        case "A-Z":
-            sortedOperations = currentData.sort((a, b) => a.description.localeCompare(b.description));
-            break;
-        case "Z-A":
-            sortedOperations = currentData.sort((a, b) => b.description.localeCompare(a.description));
-            break;
-        default:
-            sortedOperations = currentData;
-    }
-
-    // Render the sorted operations
-    renderOperations(sortedOperations);
-})
-
-$(".hide-filters-btn").addEventListener("click", () => {
-            hideElement([".form-filtros"])
-            hideElement([".hide-filters-btn"])
-            showElement([".show-filters-btn"])
-            hideElement([".remove-filters-btn"])
-        })
-$(".show-filters-btn").addEventListener("click", () => {
-            showElement([".form-filtros"])
-            showElement([".hide-filters-btn"])
-            showElement([".remove-filters-btn"])
-            hideElement([".show-filters-btn"])
-        })
-        
-
-// Esto no hay en el tp pero podemos anadir 
-    $(".remove-filters-btn").addEventListener("click", () => {
-        $(".form-select-category").value = "Todas";
-        $(".form-select-tipo").value = "todos";
-        $(".input-date").valueAsDate = new Date()
-        $(".form-select-order").value = "Mas reciente"
-    
-        renderOperations(getData("operations"));
->>>>>>> b82def2063005b86a6f0a95e6f8c95783a7c546b
     })
 }
-
 
 if (typeof window !== 'undefined') {
     // Verificar si el objeto window está definido

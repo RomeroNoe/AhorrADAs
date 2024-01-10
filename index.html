@@ -136,14 +136,14 @@
                             </li>
 
                             <li class="section-filtros-ordenar mb-2 md:mb-4 flex flex-col flex-col ">
-                                <label for="">Ordenar por</label>
-                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md ">
-                                    <option>Mas reciente</option>
-                                    <option>Menos reciente</option>
-                                    <option>Mayor monto</option>
-                                    <option>Menor monto</option>
-                                    <option>A-Z</option>
-                                    <option>Z-A</option>
+                                <label for="order">Ordenar por</label>
+                                <select class="form-select-order p-2 border-slate-200 border-2  rounded-md " id="order">
+                                    <option value="recent">Mas reciente</option>
+                                    <option value="older">Menos reciente</option>
+                                    <option value="max">Mayor monto</option>
+                                    <option value="min">Menor monto</option>
+                                    <option value="aZ">A-Z</option>
+                                    <option value="zA">Z-A</option>
                                 </select>
                             </li>
 
@@ -276,14 +276,7 @@
                         </div>
                     </form>
                     <div id="categories" class="">
-                        <table class="">
-    
-                            <tbody class="" id="container-categories">
-                                
-                                
-                            </tbody>
-    
-                        </table>
+                        <div class="container-categories" id="container-categories"></div>
                     </div>
                 </div>
                 <div id="error-message" class="hidden text-red-600">
