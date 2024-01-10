@@ -110,8 +110,10 @@ const renderOperations = (operations) => {
     } else {
         showElement([".no-operations"])
         hideElement([".div-table-container"])
-        
-}
+    }
+    $(".form-select-category").innerHTML += `
+
+    `
 }
     
 
@@ -318,25 +320,6 @@ const saveCategory = () => {
 }
 
 
-
-// Delete operation
-
-const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $("#btn-remove-operations").setAttribute("data-id", operationId)
-    $("#btn-remove-operations").addEventListener("click", () => {
-        const operationId = $("#btn-remove-operations").getAttribute("data-id")
-        deleteOperation(operationId);
-        showOperations(getData("operations"));
-
-    });
-}
-
-const deleteOperation = (operationId) => {
-    const currentData = getData("operations").filter(operation => operation.id != operationId);
-    setData("operations", currentData);
-    window.location.reload()
-
-}
 
 // <!-- Operaciones -->
 
@@ -804,86 +787,17 @@ console.log($(".btn-confirm-delete"))
     // Filters
 
     $(".form-select-tipo").addEventListener("input", (e) => {
-        const selectedType = e.target.value;
-    
-        if (selectedType === "todos") {
-            
-            renderOperations(getData("operations"));
-        } else {
-            
-            const currentData = getData("operations");
-            const filterOperationType = currentData.filter(operations => operations.type === selectedType);
-            renderOperations(filterOperationType);
-        }
+        const operationId = e.target.value
+        const currentData = getData("operations")
+        const filterOperations = currentData.filter(operation => operation.type === operationId)
+        renderOperations(filterOperations)
     })
 
     $(".form-select-category").addEventListener("input", (e) => {
-        const selectedCategory = e.target.value
-        if (selectedCategory === "Todas") {
-            renderOperations(getData("operations"))
-        } else {
-            const currentData = getData("operations")
-            filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
-            renderOperations(filterOperationCategory)
-        }
-    })
-
-    $(".input-date").addEventListener("input", (e) => {
-        const selectedDate = new Date(e.target.value)
-        const currentDate = new Date()
-        
+        const operationId = e.target.value
         const currentData = getData("operations")
-    
-        const filterOperationDate = currentData.filter(operation => {
-            const operationDate = new Date(operation.day)
-            return operationDate >= selectedDate && operationDate <= currentDate;
-        })
-    
-        renderOperations(filterOperationDate)
-    })
-
-    
-
-$(".form-select-order").addEventListener("input", (e) => {
-    const selectedOption = e.target.value;
-    const currentData = getData("operations");
-
-    // Sort operations based on the selected option
-    let sortedOperations;
-    switch (selectedOption) {
-        case "Mas reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
-            break;
-        case "Menos reciente":
-            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
-            break;
-        case "Mayo monto":
-            sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
-            break;
-        case "Menor monto":
-            sortedOperations = currentData.sort((a, b) => a.amount - b.amount);
-            break;
-        case "A-Z":
-            sortedOperations = currentData.sort((a, b) => a.description.localeCompare(b.description));
-            break;
-        case "Z-A":
-            sortedOperations = currentData.sort((a, b) => b.description.localeCompare(a.description));
-            break;
-        default:
-            sortedOperations = currentData;
-    }
-
-    // Render the sorted operations
-    renderOperations(sortedOperations);
-})
-
-    $(".remove-filters-btn").addEventListener("click", () => {
-        $(".form-select-category").value = "Todas";
-        $(".form-select-tipo").value = "todos";
-        $(".input-date").valueAsDate = new Date()
-        $(".section-filtros-ordenar").value = "Mas reciente"
-    
-        renderOperations(getData("operations"));
+        const filterOperations = currentData.filter(operation => operation.category === operationId)
+        renderOperations(filterOperations)
     })
 }
 
