@@ -115,7 +115,6 @@ const renderOperations = (operations) => {
 
     `
 }
-    
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -320,7 +319,10 @@ const saveCategory = () => {
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b82def2063005b86a6f0a95e6f8c95783a7c546b
 // <!-- Operaciones -->
 
 /* Add new operation */
@@ -363,10 +365,9 @@ const showOperations = (arrayOperations) => {
 // Delete operation
 
 const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $(".btn-remove").setAttribute("data-id", operationId)
-    $(".description").innerText = `${operationDescription}`
-    $(".btn-remove").addEventListener("click", () => {
-        const operationId = $(".btn-remove").getAttribute("data-id")
+    $("#btn-remove-operations").setAttribute("data-id", operationId)
+    $("#btn-remove-operations").addEventListener("click", () => {
+        const operationId = $("#btn-remove-operations").getAttribute("data-id")
         deleteOperation(operationId);
         showOperations(getData("operations"));
 
@@ -753,6 +754,7 @@ const initializeApp = () => {
         }
     })
 
+
     // Categories
     // Add Category
 
@@ -763,10 +765,10 @@ const initializeApp = () => {
 
     // Delete category
    
-    $(".btn-remove-categories").addEventListener("click", () => {
-        showElement(["#removeCategoryConfirmation"]);
-        console.log($(".btn-remove-categories"))
-    })
+    // $(".btn-remove-categories").addEventListener("click", () => {
+    //     showElement(["#removeCategoryConfirmation"])
+        
+    // })
 
     // $(".btn-cancel-delete").addEventListener("click", () => {
     //     hideElement(["#removeCategoryConfirmation"])
@@ -786,7 +788,9 @@ console.log($(".btn-confirm-delete"))
 
     // Filters
 
+    
     $(".form-select-tipo").addEventListener("input", (e) => {
+<<<<<<< HEAD
         const operationId = e.target.value
         const currentData = getData("operations")
         const filterOperations = currentData.filter(operation => operation.type === operationId)
@@ -798,8 +802,110 @@ console.log($(".btn-confirm-delete"))
         const currentData = getData("operations")
         const filterOperations = currentData.filter(operation => operation.category === operationId)
         renderOperations(filterOperations)
+=======
+        e.preventDefault()
+        const selectedType = e.target.value
+    
+        if (selectedType === "todos") {
+            
+            renderOperations(getData("operations"))
+        } else {
+            
+            const currentData = getData("operations")
+            const filterOperationType = currentData.filter(operations => operations.type === selectedType)
+            renderOperations(filterOperationType)
+        }
+    })
+
+    $(".form-select-category").addEventListener("input", (e) => {
+        e.preventDefault()
+        const selectedCategory = e.target.value
+        if (selectedCategory === "Todas") {
+            renderOperations(getData("operations"))
+        } else {
+            const currentData = getData("operations")
+            const filterOperationCategory = currentData.filter(operation => operation.category === selectedCategory)
+            renderOperations(filterOperationCategory)
+        }
+    })
+
+    $(".input-date").addEventListener("input", (e) => {
+        e.preventDefault()
+        const selectedDate = new Date(e.target.value)
+        const currentDate = new Date()
+        
+        const currentData = getData("operations")
+    
+        const filterOperationDate = currentData.filter(operation => {
+            const operationDate = new Date(operation.day)
+            return operationDate >= selectedDate && operationDate <= currentDate;
+        })
+    
+        renderOperations(filterOperationDate)
+    })
+
+    
+
+$(".form-select-order").addEventListener("input", (e) => {
+    e.preventDefault()
+    const selectedOption = e.target.value;
+    const currentData = getData("operations");
+
+    // Sort operations based on the selected option
+    let sortedOperations;
+    switch (selectedOption) {
+        case "Mas reciente":
+            sortedOperations = currentData.sort((a, b) => new Date(b.day) - new Date(a.day));
+            break;
+        case "Menos reciente":
+            sortedOperations = currentData.sort((a, b) => new Date(a.day) - new Date(b.day));
+            break;
+        case "Mayo monto":
+            sortedOperations = currentData.sort((a, b) => b.amount - a.amount);
+            break;
+        case "Menor monto":
+            sortedOperations = currentData.sort((a, b) => a.amount - b.amount);
+            break;
+        case "A-Z":
+            sortedOperations = currentData.sort((a, b) => a.description.localeCompare(b.description));
+            break;
+        case "Z-A":
+            sortedOperations = currentData.sort((a, b) => b.description.localeCompare(a.description));
+            break;
+        default:
+            sortedOperations = currentData;
+    }
+
+    // Render the sorted operations
+    renderOperations(sortedOperations);
+})
+
+$(".hide-filters-btn").addEventListener("click", () => {
+            hideElement([".form-filtros"])
+            hideElement([".hide-filters-btn"])
+            showElement([".show-filters-btn"])
+            hideElement([".remove-filters-btn"])
+        })
+$(".show-filters-btn").addEventListener("click", () => {
+            showElement([".form-filtros"])
+            showElement([".hide-filters-btn"])
+            showElement([".remove-filters-btn"])
+            hideElement([".show-filters-btn"])
+        })
+        
+
+// Esto no hay en el tp pero podemos anadir 
+    $(".remove-filters-btn").addEventListener("click", () => {
+        $(".form-select-category").value = "Todas";
+        $(".form-select-tipo").value = "todos";
+        $(".input-date").valueAsDate = new Date()
+        $(".form-select-order").value = "Mas reciente"
+    
+        renderOperations(getData("operations"));
+>>>>>>> b82def2063005b86a6f0a95e6f8c95783a7c546b
     })
 }
+
 
 if (typeof window !== 'undefined') {
     // Verificar si el objeto window está definido
