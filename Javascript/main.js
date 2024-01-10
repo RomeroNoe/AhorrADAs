@@ -113,7 +113,6 @@ const renderOperations = (operations) => {
         
 }
 }
-    
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -316,26 +315,6 @@ const saveCategory = () => {
     }   
 }
 
-
-
-// Delete operation
-
-const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $("#btn-remove-operations").setAttribute("data-id", operationId)
-    $("#btn-remove-operations").addEventListener("click", () => {
-        const operationId = $("#btn-remove-operations").getAttribute("data-id")
-        deleteOperation(operationId);
-        showOperations(getData("operations"));
-
-    });
-}
-
-const deleteOperation = (operationId) => {
-    const currentData = getData("operations").filter(operation => operation.id != operationId);
-    setData("operations", currentData);
-    window.location.reload()
-
-}
 
 // <!-- Operaciones -->
 
@@ -763,10 +742,10 @@ const initializeApp = () => {
 
     // Delete category
    
-    $(".btn-remove-categories").addEventListener("click", () => {
-        showElement(["#removeCategoryConfirmation"]);
-        console.log($(".btn-remove-categories"))
-    })
+    // $(".btn-remove-categories").addEventListener("click", () => {
+    //     showElement(["#removeCategoryConfirmation"])
+        
+    // })
 
     // $(".btn-cancel-delete").addEventListener("click", () => {
     //     hideElement(["#removeCategoryConfirmation"])
