@@ -72,7 +72,7 @@ const renderCategoriesTable = (categories) => {
     cleanContainer("#container-categories")
     for (const {id, name} of categories) {
         $("#container-categories").innerHTML += `
-            <div class="">
+            <div class="bg-white">
                 <p class="">${name}</p>
                 <div>
                     <span class="edit-btn" data-id="${id}">Editar</span>
