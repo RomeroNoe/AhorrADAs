@@ -3,7 +3,11 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-const randomId = () => self.crypto.randomUUID()
+const randomId = () => {
+    if (typeof document !== "undefined") {
+    self.crypto.randomUUID()
+    }
+} //de esta manera no tenemos el error undefined
 
 const showElement = (selectors) => {
     for (const selector of selectors) {
@@ -19,7 +23,12 @@ const hideElement = (selectors) => {
 const cleanContainer = (selector) => $(selector).innerHTML = ""
 
 /*LOCAL STORAGE */
-const getData = (key) => JSON.parse(localStorage.getItem(key))
+const getData = (key) => {
+    if (typeof document !== "undefined") {
+    JSON.parse(localStorage.getItem(key))
+}
+} //de esta manera no tenemos el error undefined
+
 const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 
@@ -87,8 +96,8 @@ const renderOperations = (operations) => {
             <td class="sm:px-6">${operation.day}</td>
             <td class="sm:px-6">${operation.amount}</td>
             <td>
-                <button class="containerEditOperation-btn text-teal-500 hover:text-black" onclick="editForm('${operation.id}')">Editar</i></button>
-                <button type="button" class="btn removeOperation-btn text-teal-500 hover:text-black" onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
+                <button class="containerEditOperation-btn text-teal-500 hover:text-black" data-id onclick="editForm('${operation.id}')">Editar</i></button>
+                <button type="button" class="btn removeOperation-btn text-teal-500 hover:text-black" data-id onclick="ejecutionDeleteBtn('${operation.id}','${operation.description}')" data-bs-toggle="modal" data-bs-target="#delete-modal">Eliminar</i></button>
             </td>
         </tr>
         `
@@ -102,9 +111,6 @@ const renderOperations = (operations) => {
     `
 }
     
-
-
-
 
 const renderCategory = (arrayCategorys) => {
     clear("#container-categories");
@@ -287,6 +293,7 @@ const updateData = (updatedCategories, updatedOperations) => {
 
 const getOperationById = (operationId) => getOperations().find(({id}) => id === operationId)
 
+
 const saveOperation = () => {
     return{
         id: randomId(),
@@ -307,25 +314,6 @@ const saveCategory = () => {
 }
 
 
-
-// Delete operation
-
-const ejecutionDeleteBtn = (operationId, operationDescription) => {
-    $("#btn-remove-operations").setAttribute("data-id", operationId)
-    $("#btn-remove-operations").addEventListener("click", () => {
-        const operationId = $("#btn-remove-operations").getAttribute("data-id")
-        deleteOperation(operationId);
-        showOperations(getData("operations"));
-
-    });
-}
-
-const deleteOperation = (operationId) => {
-    const currentData = getData("operations").filter(operation => operation.id != operationId);
-    setData("operations", currentData);
-    window.location.reload()
-
-}
 
 // <!-- Operaciones -->
 
@@ -366,6 +354,26 @@ const showOperations = (arrayOperations) => {
 }
 
 
+// Delete operation
+
+const ejecutionDeleteBtn = (operationId, operationDescription) => {
+    $(".btn-remove").setAttribute("data-id", operationId)
+    $(".description").innerText = `${operationDescription}`
+    $(".btn-remove").addEventListener("click", () => {
+        const operationId = $(".btn-remove").getAttribute("data-id")
+        deleteOperation(operationId);
+        showOperations(getData("operations"));
+
+    });
+}
+
+const deleteOperation = (operationId) => {
+    const currentData = getData("operations").filter(operation => operation.id != operationId);
+    setData("operations", currentData);
+    window.location.reload()
+
+}
+
 
 // Edit Form
 
@@ -389,18 +397,58 @@ const clearOperationForm = () => {
     $("#op-input-date").valueAsDate = date
 }
 
+const getOperationDetails = () => {
+    const description = $("#input-description-text").value
+    const amount = $("#input-amount").valueAsNumber
+    const type = $("#select-type").value
+    const category = $("#select-category").value
+    const day = $("#op-input-date").valueAsDate
+    return { description, amount, type, category, day }
+}
+
+
+const fillOperationForm = (operation) => {
+    $("#input-description-text").value = operation.description
+    $("#input-amount").value = operation.amount
+    $("#select-type").value = operation.type
+    $("#select-category").value = operation.category
+    $("#op-input-date").valueAsDate = new Date (operation.day)
+}
+
+
+const updateOperation = (operationId) => {
+    const updatedOperations = getOperations().map(operation =>
+        (operation.id === operationId) ? saveOperation(operationId) : operation
+    )
+    updateData(null, updatedOperations)
+}
+
+const handleEditOperation = () => {
+    const operationId = $("#edit-operation").getAttribute("data-id")
+    const { description, amount, type, category, day } = getOperationDetails()
+
+    if (description && !isNaN(amount) && type && category && day) {
+        updateOperation(operationId)
+    } else {
+        showElement(["#error-message"])
+    }
+}
+
 //Categories
 
 //Obtener categoría por ID
 
-const defaultCategories = [
-            { id: randomId(), name: "Comida" },
-            { id: randomId(), name: "Servicios" },
-            { id: randomId(), name: "Salidas" },
-            { id: randomId(), name: "Educación" },
-            { id: randomId(), name: "Transporte" },
-            { id: randomId(), name: "Trabajo" }       
-]
+const defaultCategories = {
+    categories : [
+        { id: randomId(), name: "Comida" },
+        { id: randomId(), name: "Servicios" },
+        { id: randomId(), name: "Salidas" },
+        { id: randomId(), name: "Educación" },
+        { id: randomId(), name: "Transporte" },
+        { id: randomId(), name: "Trabajo" }
+    ],
+    transactions : []
+}
 
 const allCategories = getData("categories") || defaultCategories
 const allOperations = getData("operations") || []
@@ -426,8 +474,7 @@ const addNewCategory = () => {
         updateData(updatedCategories, getOperations())
         $("#input-add").value = "" 
     } else {
-        showElement(["#error-message"])
-
+       //error
     }
 }
 
@@ -444,7 +491,8 @@ const deleteCategory = (categoryId) => {
         updateData(updatedCategories, updatedOperations)
         
     } else {
-    }//Acá tambien podemos ponerle una ventana por si cancela el confirm. (algo tipo "Eliminación de categoria cancelada")
+        //error
+    }
 }
 
 //Edit Category
@@ -480,8 +528,8 @@ const editCategory = () => {
 
 /*BALANCE*/
 
-const total = (transactionType, transactions) => {
-    return transactions.filter(({type}) => transactionType === type).reduce((acc, {amount}) => acc + amount, 0)
+const total = (operationType, operations) => {
+    return operations.filter(({type}) => operationType === type).reduce((acc, {amount}) => acc + amount, 0)
 }
 
 const resetBalance = () => {
@@ -696,9 +744,10 @@ const initializeApp = () => {
 
     // Delete category
    
-    // $(".btn-remove-categories").addEventListener("click", () => {
-    //     showElement(["#removeCategoryConfirmation"])
-    // })
+    $(".btn-remove-categories").addEventListener("click", () => {
+        showElement(["#removeCategoryConfirmation"]);
+        console.log($(".btn-remove-categories"))
+    })
 
     // $(".btn-cancel-delete").addEventListener("click", () => {
     //     hideElement(["#removeCategoryConfirmation"])
@@ -712,6 +761,9 @@ const initializeApp = () => {
             window.location.reload()
         }
     })
+    ;  // Check if this selects the correct button
+console.log($(".btn-cancel-delete"));      // Check if this selects the correct button
+console.log($(".btn-confirm-delete"))
 
     // Filters
 
